@@ -14,7 +14,7 @@ export class ResturantResolver {
 
   @Mutation(retuns => Boolean)
   async createResturant(
-    @Args() createRestaurantDto: CreateRestaurantDto,
+    @Args('input') createRestaurantDto: CreateRestaurantDto,
   ): Promise<boolean> {
     try {
       await this.restaurantService.createRestaurant(createRestaurantDto);
