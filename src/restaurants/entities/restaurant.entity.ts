@@ -1,4 +1,4 @@
-// typeDef for GraphQL
+// Query typeDef for GraphQL
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
