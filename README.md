@@ -2,7 +2,7 @@
 
 The backend of Max Eats Clone
 
-## User Model:
+## User Entity:
 
 - [ ] id
 - [ ] createdAt
