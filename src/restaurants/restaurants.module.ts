@@ -5,7 +5,7 @@ import { Restaurant } from './entities/restaurant.entity';
 import { RestaurantService } from './resturants.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Restaurant])], // allow to import pacific feature
-  providers: [ResturantResolver, RestaurantService], // add in providers for inject resolver class
+  imports: [TypeOrmModule.forFeature([Restaurant])], // forFeature : 특정 entity 를 import
+  providers: [ResturantResolver, RestaurantService], // add in providers to inject resolver class
 })
 export class RestaurantsModule {}
