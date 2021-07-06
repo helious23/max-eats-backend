@@ -10,7 +10,7 @@ import { User } from './users/entities/user.entity';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true, // globally env file에 접근
+      isGlobal: true, // globally env file에 접근 : 필요한 module 의 import 에 ConfigService 로 접근
       envFilePath: process.env.NODE_ENV === 'dev' ? '.env.dev' : '.env.test',
       ignoreEnvFile: process.env.NODE_ENV === 'prod', // product 시 env 파읾 무시
       validationSchema: Joi.object({
@@ -21,6 +21,7 @@ import { User } from './users/entities/user.entity';
         DB_USERNAME: Joi.string().required(),
         DB_PASSWORD: Joi.string().required(),
         DB_NAME: Joi.string().required(),
+        SECRET_KEY: Joi.string().required(),
       }),
     }),
     TypeOrmModule.forRoot({
