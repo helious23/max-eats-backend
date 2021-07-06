@@ -28,6 +28,6 @@ export class User extends CoreEntity {
   password: string;
 
   @Column({ type: 'enum', enum: UserRole }) // for DB (0, 1, 2)
-  @Field(type => UserRole)
+  @Field(type => UserRole) // for graphQL
   role: UserRole;
 }
