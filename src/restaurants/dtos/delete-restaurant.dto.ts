@@ -1,4 +1,4 @@
-import { InputType, PickType, PartialType, Field } from '@nestjs/graphql';
+import { InputType, PickType, Field } from '@nestjs/graphql';
 import { Restaurant } from '../entities/restaurant.entity';
 
 @InputType()
