@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { CreateRestaurantDto } from './dtos/create-restaurant.dto';
 import { Restaurant } from './entities/restaurant.entity';
 import { DeleteRestaurantDto } from './dtos/delete-restaurant.dto';
+import { UpdateRestaurantDto } from './dtos/update-restaurant.dto';
 
 @Injectable() // resolver 에 constructor 로 inject 할 수 있게 함
 export class RestaurantService {
@@ -28,12 +29,11 @@ export class RestaurantService {
     return this.restaurants.save(newRestaurant); // save on DB
   }
 
-  async deleteRestaurant(
-    deleteRestaurantDto: DeleteRestaurantDto,
-  ): Promise<Restaurant> {
-    const deletingRestaurant = await this.restaurants.delete(
-      deleteRestaurantDto,
-    );
-    return;
+  deleteRestaurant({ id }: DeleteRestaurantDto) {
+    return this.restaurants.delete(id);
+  }
+
+  updateRestaurant({ id, data }: UpdateRestaurantDto) {
+    return this.restaurants.update(id, { ...data });
   }
 }

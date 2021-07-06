@@ -3,6 +3,7 @@ import { CreateRestaurantDto } from './dtos/create-restaurant.dto';
 import { Restaurant } from './entities/restaurant.entity';
 import { RestaurantService } from './resturants.service';
 import { DeleteRestaurantDto } from './dtos/delete-restaurant.dto';
+import { UpdateRestaurantDto } from './dtos/update-restaurant.dto';
 
 @Resolver(of => Restaurant) // decorator 사용으로 graphql schema 작성 할 필요 없음
 export class ResturantResolver {
@@ -33,10 +34,23 @@ export class ResturantResolver {
 
   @Mutation(returns => Boolean)
   async deleteRestaurant(
-    @Args('id') deleteRestaurantDto: DeleteRestaurantDto,
+    @Args('input') deleteRestaurantDto: DeleteRestaurantDto,
   ): Promise<boolean> {
     try {
       await this.restaurantService.deleteRestaurant(deleteRestaurantDto);
+      return true;
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
+  }
+
+  @Mutation(returns => Boolean)
+  async updateResturant(
+    @Args('input') updateResturantDto: UpdateRestaurantDto,
+  ): Promise<boolean> {
+    try {
+      await this.restaurantService.updateRestaurant(updateResturantDto);
       return true;
     } catch (e) {
       console.log(e);

@@ -1,4 +1,4 @@
-import { InputType, PickType } from '@nestjs/graphql';
+import { InputType, PickType, PartialType, Field } from '@nestjs/graphql';
 import { Restaurant } from '../entities/restaurant.entity';
 
 @InputType()
@@ -6,4 +6,7 @@ export class DeleteRestaurantDto extends PickType(
   Restaurant,
   ['id'],
   InputType,
-) {}
+) {
+  @Field(type => Number)
+  id: number;
+}
