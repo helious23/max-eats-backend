@@ -7,9 +7,8 @@ import { UsersService } from '../users/users.service';
 export class JwtMiddleware implements NestMiddleware {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly usersService: UsersService,
+    private readonly usersService: UsersService, // users.modules 에서 exports 되었는지 확인!
   ) {}
-  // implements : class 가 interface 처럼 작동
   async use(req: Request, res: Response, next: NextFunction) {
     if ('x-jwt' in req.headers) {
       const token = req.headers['x-jwt']; // find token

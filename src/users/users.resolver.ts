@@ -6,6 +6,8 @@ import {
   CreateAccountInput,
   CreateAccountOutput,
 } from './dtos/create-account.dto';
+import { UseGuards } from '@nestjs/common';
+import { AuthGuard } from '../auth/auth.guard';
 
 // # 3
 @Resolver(of => User)
@@ -42,11 +44,8 @@ export class UsersResolver {
   }
 
   @Query(returns => User)
-  me(@Context() context) {
-    if (!context.user) {
-      return;
-    } else {
-      return context.user;
-    }
+  @UseGuards(AuthGuard)
+  me() {
+    return;
   }
 }

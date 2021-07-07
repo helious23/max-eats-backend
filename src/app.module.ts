@@ -9,7 +9,6 @@ import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
-import { CommonModule } from './common/common.module';
 import { User } from './users/entities/user.entity';
 import { JwtModule } from './jwt/jwt.module';
 import { JwtMiddleware } from './jwt/jwt.middleware';
@@ -51,7 +50,6 @@ import { AuthModule } from './auth/auth.module';
       privateKey: process.env.PRIVATE_KEY,
     }),
     UsersModule,
-    CommonModule,
     AuthModule,
   ],
   controllers: [],
@@ -60,8 +58,9 @@ import { AuthModule } from './auth/auth.module';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(JwtMiddleware).forRoutes({
+      //.exclude : 특정 route 만 제외함
       path: '/graphql', // 이 경로일 경우에
-      method: RequestMethod.POST, // POST, GET, DELETE 등 모든 method 에서 사용
+      method: RequestMethod.POST, // POST, GET, DELETE 등 사용할 method 지정 가능(ALL 도 가능)
     });
   }
 }
