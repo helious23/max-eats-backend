@@ -58,7 +58,7 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(JwtMiddleware).forRoutes({
       path: '/graphql', // 이 경로일 경우에
-      method: RequestMethod.POST, // method 가 POST 일 경우에만 middleware 적용
+      method: RequestMethod.ALL, // POST, GET, DELETE 등 모든 method 에서 사용
     });
   }
 }
