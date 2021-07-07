@@ -12,6 +12,7 @@ export class JwtService {
     return jwt.sign({ id: userId }, this.options.privateKey);
   }
   verify(token: string) {
+    // privateKey 가 필요하므로 jwt.service 에서 verify 한 다음 return
     return jwt.verify(token, this.options.privateKey);
   }
 }
