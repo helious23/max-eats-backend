@@ -13,6 +13,7 @@ import { CommonModule } from './common/common.module';
 import { User } from './users/entities/user.entity';
 import { JwtModule } from './jwt/jwt.module';
 import { JwtMiddleware } from './jwt/jwt.middleware';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -44,12 +45,14 @@ import { JwtMiddleware } from './jwt/jwt.middleware';
     }),
     GraphQLModule.forRoot({
       autoSchemaFile: true, // schemaFile 메모리에 저장
+      context: ({ req }) => ({ user: req['user'] }), // graphQL context 로 request 의 user 를 공유
     }),
     JwtModule.forRoot({
       privateKey: process.env.PRIVATE_KEY,
     }),
     UsersModule,
     CommonModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
@@ -58,7 +61,7 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(JwtMiddleware).forRoutes({
       path: '/graphql', // 이 경로일 경우에
-      method: RequestMethod.ALL, // POST, GET, DELETE 등 모든 method 에서 사용
+      method: RequestMethod.POST, // POST, GET, DELETE 등 모든 method 에서 사용
     });
   }
 }
