@@ -1,4 +1,4 @@
-import { BeforeInsert, Column, Entity } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, Entity } from 'typeorm';
 import {
   ObjectType,
   InputType,
@@ -37,6 +37,7 @@ export class User extends CoreEntity {
   role: UserRole;
 
   @BeforeInsert() // user create 이 후 save 전에 실행
+  @BeforeUpdate() // editProfile 시에도 hash
   async hashPassword(): Promise<void> {
     try {
       this.password = await bcrypt.hash(this.password, 10);
