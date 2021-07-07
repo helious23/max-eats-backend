@@ -6,6 +6,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateAccountInput } from './dtos/create-account.dto';
 import { LoginInput } from './dtos/login.dto';
 import { ConfigService } from '@nestjs/config';
+import { JwtService } from '../jwt/jwt.service';
 
 // # 2
 @Injectable()
@@ -13,6 +14,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User) private readonly users: Repository<User>,
     private readonly config: ConfigService,
+    private readonly jwtService: JwtService,
   ) {}
 
   async createAccount({

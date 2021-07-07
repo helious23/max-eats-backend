@@ -39,9 +39,9 @@ import { JwtModule } from './jwt/jwt.module';
     GraphQLModule.forRoot({
       autoSchemaFile: true, // schemaFile 메모리에 저장
     }),
+    JwtModule.forRoot(),
     UsersModule,
     CommonModule,
-    JwtModule,
   ],
   controllers: [],
   providers: [],
