@@ -99,4 +99,16 @@ export class UsersService {
     }
     return this.users.save(user);
   }
+
+  async verifyEmail(code: string): Promise<boolean> {
+    const verification = await this.verifications.findOne(
+      { code },
+      { relations: ['user'] }, // loadRelationIds:true : relationship 이 있는 id 만 가지고 옴
+    );
+    if (verification) {
+      verification.user.verified = true;
+      this.users.save(verification.user);
+    }
+    return false;
+  }
 }
