@@ -27,7 +27,7 @@ export class User extends CoreEntity {
   @IsEmail()
   email: string;
 
-  @Column()
+  @Column({ select: false }) // user 객체에 password 제외
   @Field(type => String)
   password: string;
 
@@ -43,11 +43,14 @@ export class User extends CoreEntity {
   @BeforeInsert() // user create 이 후 save 전에 실행
   @BeforeUpdate() // editProfile 시에도 hash
   async hashPassword(): Promise<void> {
-    try {
-      this.password = await bcrypt.hash(this.password, 10);
-    } catch (e) {
-      console.log(e);
-      throw new InternalServerErrorException();
+    if (this.password) {
+      // password 가 있을 때에만 실행
+      try {
+        this.password = await bcrypt.hash(this.password, 10);
+      } catch (e) {
+        console.log(e);
+        throw new InternalServerErrorException();
+      }
     }
   }
 
