@@ -13,6 +13,7 @@ import { User } from './users/entities/user.entity';
 import { JwtModule } from './jwt/jwt.module';
 import { JwtMiddleware } from './jwt/jwt.middleware';
 import { AuthModule } from './auth/auth.module';
+import { Verification } from './users/entities/verification.entity';
 
 @Module({
   imports: [
@@ -40,7 +41,7 @@ import { AuthModule } from './auth/auth.module';
       database: process.env.DB_NAME,
       synchronize: process.env.NODE_ENV !== 'prod', // auto migration. production 시에는 false
       logging: process.env.NODE_ENV !== 'prod', // check log. production 시에는 false
-      entities: [User], // going to DB(table)
+      entities: [User, Verification], // going to DB(table)
     }),
     GraphQLModule.forRoot({
       autoSchemaFile: true, // schemaFile 메모리에 저장
