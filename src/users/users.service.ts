@@ -116,7 +116,7 @@ export class UsersService {
       if (password) {
         user.password = password;
       }
-      this.users.save(user);
+      await this.users.save(user);
       return { ok: true };
     } catch (error) {
       return { ok: false, error };
@@ -131,7 +131,8 @@ export class UsersService {
       );
       if (verification) {
         verification.user.verified = true;
-        this.users.save(verification.user);
+        await this.users.save(verification.user);
+        await this.verifications.delete(verification.id);
         return { ok: true };
       }
       return { ok: false, error: '인증되지 않았습니다.' };
