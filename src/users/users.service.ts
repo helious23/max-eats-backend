@@ -16,7 +16,7 @@ import { MailService } from '../mail/mail.service';
 
 // # 2
 @Injectable()
-export class UsersService {
+export class UserService {
   constructor(
     @InjectRepository(User) private readonly users: Repository<User>,
     @InjectRepository(Verification)
@@ -48,7 +48,6 @@ export class UsersService {
 
       // send email
       this.mailService.sendVerificationEmail(user.email, verification.code);
-
       return { ok: true };
     } catch (e) {
       return { ok: false, error: '계정을 만들지 못했습니다.' };
@@ -93,13 +92,10 @@ export class UsersService {
       const user = await this.users.findOne({ id });
       return {
         ok: true,
-        user,
+        user: user,
       };
     } catch (error) {
-      return {
-        ok: false,
-        error: '사용자를 찾을 수 없습니다.',
-      };
+      return { ok: false, error: '사용자를 찾을 수 없습니다.' };
     }
   }
 
@@ -123,7 +119,7 @@ export class UsersService {
       await this.users.save(user);
       return { ok: true };
     } catch (error) {
-      return { ok: false, error };
+      return { ok: false, error: '프로필을 업데이트 하지 못했습니다.' };
     }
   }
 
