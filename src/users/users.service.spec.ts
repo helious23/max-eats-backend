@@ -6,7 +6,6 @@ import { Verification } from './entities/verification.entity';
 import { JwtService } from '../jwt/jwt.service';
 import { MailService } from '../mail/mail.service';
 import { Repository } from 'typeorm';
-import { create } from 'domain';
 
 const mockRepository = () => ({
   findOne: jest.fn(),
@@ -126,8 +125,39 @@ describe('UserService', () => {
       );
       expect(result).toEqual({ ok: true });
     });
+
+    it('should fail on exception', async () => {
+      usersRepository.findOne.mockRejectedValue(new Error()); // findOne 함수 자체에 reject -> catch
+      const result = await service.createAccount(createAccountArgs);
+      expect(result).toEqual({
+        ok: false,
+        error: '계정을 만들지 못했습니다.',
+      });
+    });
   });
-  it.todo('login');
+
+  describe('login', () => {
+    const loginArgs = {
+      email: 'fake-login@test.com',
+      password: 'fake-pw',
+    };
+    it('should fail if user does not exist', async () => {
+      // mocking
+      usersRepository.findOne.mockResolvedValue(null); // user 로 null 을 return
+
+      // testing
+      const result = await service.login(loginArgs);
+      expect(usersRepository.findOne).toHaveBeenCalledTimes(1);
+      expect(usersRepository.findOne).toHaveBeenCalledWith(
+        expect.any(Object),
+        expect.any(Object),
+      );
+      expect(result).toEqual({
+        ok: false,
+        error: '사용자를 찾을 수 없습니다.',
+      });
+    });
+  });
   it.todo('findById');
   it.todo('editProfile');
   it.todo('verifyEmail');
