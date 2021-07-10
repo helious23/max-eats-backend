@@ -14,7 +14,7 @@ const mockRepository = () => ({
 });
 
 const mockJwtService = {
-  sign: jest.fn(),
+  sign: jest.fn(() => 'fake-signed-token'),
   verify: jest.fn(),
 };
 
@@ -28,10 +28,12 @@ type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
 describe('UserService', () => {
   let service: UserService;
   let mailService: MailService;
+  let jwtService: JwtService;
+
   let usersRepository: MockRepository<User>;
   let verificationRepository: MockRepository<Verification>;
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     const module = await Test.createTestingModule({
       // testingModule 을 만들어서 provider 에 mock service 및 repository 주입
       providers: [
@@ -58,6 +60,7 @@ describe('UserService', () => {
     // 이후 service, userRepository 사용 가능
     service = module.get<UserService>(UserService);
     mailService = module.get<MailService>(MailService);
+    jwtService = module.get<JwtService>(JwtService);
     usersRepository = module.get(getRepositoryToken(User));
     verificationRepository = module.get(getRepositoryToken(Verification));
   });
@@ -156,6 +159,32 @@ describe('UserService', () => {
         ok: false,
         error: '사용자를 찾을 수 없습니다.',
       });
+    });
+
+    it('should fail if the password is wrong', async () => {
+      const mockedUser = {
+        id: 1,
+        checkPassword: jest.fn(() => Promise.resolve(false)), // Promise 값으로 false 를 return 하는 fn
+      };
+      usersRepository.findOne.mockResolvedValue(mockedUser);
+      const result = await service.login(loginArgs);
+      expect(result).toEqual({
+        ok: false,
+        error: '비밀번호가 틀렸습니다.',
+      });
+    });
+
+    it('should return token if password correct', async () => {
+      const mockedUser = {
+        id: 1,
+        checkPassword: jest.fn(() => Promise.resolve(true)),
+      };
+      usersRepository.findOne.mockResolvedValue(mockedUser);
+      const result = await service.login(loginArgs);
+
+      expect(jwtService.sign).toHaveBeenCalledTimes(1);
+      expect(jwtService.sign).toHaveBeenCalledWith(expect.any(Number));
+      expect(result).toEqual({ ok: true, token: 'fake-signed-token' });
     });
   });
   it.todo('findById');
