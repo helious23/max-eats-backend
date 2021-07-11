@@ -32,6 +32,32 @@ describe('MailService', () => {
     expect(service).toBeDefined();
   });
 
+  describe('sendVerificationEmail', () => {
+    it('should call sendEmail', () => {
+      const sendVerificationArgs = {
+        email: 'email',
+        code: 'code',
+      };
+      // spyOn : mock fn 으로 만들 수 없을 경우 사용. sendEmail 함수를 가로채 결괏값을 변경.
+      jest.spyOn(service, 'sendEmail').mockImplementation(async () => {});
+
+      service.sendVerificationEmail(
+        sendVerificationArgs.email,
+        sendVerificationArgs.code,
+      );
+
+      expect(service.sendEmail).toHaveBeenCalledTimes(1);
+      expect(service.sendEmail).toHaveBeenCalledWith(
+        'Max Eats 회원 가입을 축하합니다.',
+        'verify-email',
+        sendVerificationArgs.email,
+        [
+          { key: 'code', value: sendVerificationArgs.code },
+          { key: 'username', value: sendVerificationArgs.email },
+        ],
+      );
+    });
+  });
+
   it.todo('sendEmail');
-  it.todo('sendVerificationEmail');
 });

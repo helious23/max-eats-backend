@@ -302,7 +302,7 @@ describe('UserService', () => {
       };
       verificationRepository.findOne.mockResolvedValue(mockedVerification);
 
-      const resutl = await service.verifyEmail('');
+      const result = await service.verifyEmail('');
       expect(verificationRepository.findOne).toHaveBeenCalledTimes(1);
       expect(verificationRepository.findOne).toHaveBeenCalledWith(
         expect.any(Object),
@@ -316,7 +316,7 @@ describe('UserService', () => {
         mockedVerification.id,
       );
 
-      expect(resutl).toEqual({ ok: true });
+      expect(result).toEqual({ ok: true });
     });
     it('should fail on verification not found', async () => {
       verificationRepository.findOne.mockResolvedValue(undefined);

@@ -10,7 +10,7 @@ export class MailService {
     @Inject(CONFIG_OPTIONS) private readonly options: MailModuleOptions,
   ) {}
 
-  private async sendEmail(
+  async sendEmail(
     subject: string,
     template: string,
     to: string,
@@ -40,8 +40,8 @@ export class MailService {
 
   sendVerificationEmail(email: string, code: string) {
     this.sendEmail('Max Eats 회원 가입을 축하합니다.', 'verify-email', email, [
-      { key: 'username', value: email },
       { key: 'code', value: code },
+      { key: 'username', value: email },
     ]);
   }
 }
