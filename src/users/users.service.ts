@@ -137,7 +137,7 @@ export class UserService {
       }
       return { ok: false, error: '인증되지 않았습니다.' };
     } catch (error) {
-      return { ok: false, error };
+      return { ok: false, error: '이메일을 인증하지 못했습니다.' };
     }
   }
 }
