@@ -7,7 +7,6 @@
     "^.+\\.(t|j)s$": "ts-jest"
   },
   "moduleNameMapper": {
-    "^src/(.*)$": "<rootDir>/src/$1"
-  },
-  "coverageDirectory": "./coverage-e2e"
+    "^src/(.*)$": "<rootDir>/../src/$1"
+  }
 }
