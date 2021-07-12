@@ -1,47 +1,31 @@
 // Query typeDef for GraphQL
 import { Field, ObjectType } from '@nestjs/graphql';
-import {
-  IsBoolean,
-  IsNumber,
-  IsOptional,
-  IsString,
-  Length,
-} from 'class-validator';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { IsString, Length } from 'class-validator';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { CoreEntity } from '../../common/entities/core.entity';
+import { Category } from './categiry.entity';
 
 // @InputType({ isAbstract: true }) // dto 에 extends 할 때만 Inputtype 으로 변경
 @ObjectType() // for graphQL schema
 @Entity() // for typeORM to bind on DB
-export class Restaurant {
-  @Field(type => Number)
-  @PrimaryGeneratedColumn()
-  @IsNumber()
-  id: number;
-
+export class Restaurant extends CoreEntity {
   @Field(type => String) // as a first argument, ReturnFunction required
   @Column()
   @IsString()
-  @Length(5, 20)
+  @Length(5)
   name: string;
 
-  @Field(type => Boolean, { defaultValue: true }) // graphQL
-  @Column({ default: true }) // DB
-  @IsOptional() // dto : value 가 없을 수도 있음
-  @IsBoolean() // dto : value 가 있다면 boolean
-  isVegan: boolean;
+  @Field(type => String)
+  @Column()
+  @IsString()
+  coverImg: string;
 
   @Field(type => String)
   @Column()
   @IsString()
   address: string;
 
-  @Field(type => String)
-  @Column()
-  @IsString()
-  ownerName: string;
-
-  @Field(type => String)
-  @Column()
-  @IsString()
-  categoryName: string;
+  @Field(type => Category)
+  @ManyToOne(type => Category, category => category.restaurants)
+  category: Category;
 }
