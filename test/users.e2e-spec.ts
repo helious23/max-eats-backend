@@ -21,10 +21,10 @@ describe('UserModule (e2e)', () => {
     app.close();
   });
 
-  it.todo('me');
-  it.todo('userProfile');
   it.todo('createAccount');
+  it.todo('userProfile');
   it.todo('login');
-  it.todo('editProfile');
+  it.todo('me');
   it.todo('verifyEmail');
+  it.todo('editProfile');
 });
