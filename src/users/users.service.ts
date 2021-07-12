@@ -106,8 +106,16 @@ export class UserService {
     try {
       const user = await this.users.findOne(userId);
       if (email) {
+        // check email 있을 경우 error
+        // unit testing 추가
+
         user.email = email;
         user.verified = false;
+
+        // 기존의 verification 삭제
+        await this.verifications.delete({ user: { id: user.id } });
+
+        // 새로운 verification 생성
         const verification = await this.verifications.save(
           this.verifications.create({ user }),
         );
