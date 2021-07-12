@@ -24,7 +24,7 @@ import { MailModule } from './mail/mail.module';
       ignoreEnvFile: process.env.NODE_ENV === 'prod', // product 시 env 파읾 무시
       validationSchema: Joi.object({
         // env 파일 validation : 내용이 부족하면 app 실행 X
-        NODE_ENV: Joi.string().valid('dev', 'prod').required(),
+        NODE_ENV: Joi.string().valid('dev', 'prod', 'test').required(),
         DB_HOST: Joi.string().required(),
         DB_PORT: Joi.string().required(),
         DB_USERNAME: Joi.string().required(),
@@ -44,7 +44,8 @@ import { MailModule } from './mail/mail.module';
       password: process.env.DB_PASSWORD, // not required on localhost
       database: process.env.DB_NAME,
       synchronize: process.env.NODE_ENV !== 'prod', // auto migration. production 시에는 false
-      logging: process.env.NODE_ENV !== 'prod', // check log. production 시에는 false
+      logging:
+        process.env.NODE_ENV !== 'prod' && process.env.NODE_ENV !== 'test', // check log. production 시에는 false
       entities: [User, Verification], // going to DB(table)
     }),
     GraphQLModule.forRoot({
