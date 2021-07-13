@@ -3,7 +3,7 @@ import { Field, ObjectType, InputType } from '@nestjs/graphql';
 import { IsString, Length } from 'class-validator';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { CoreEntity } from '../../common/entities/core.entity';
-import { Category } from './categiry.entity';
+import { Category } from './category.entity';
 import { User } from '../../users/entities/user.entity';
 
 @InputType('RestaurantInputType', { isAbstract: true }) // dto 에 extends 할 때만 Inputtype 으로 변경
@@ -13,7 +13,7 @@ export class Restaurant extends CoreEntity {
   @Field(type => String) // as a first argument, ReturnFunction required
   @Column()
   @IsString()
-  @Length(5)
+  @Length(2)
   name: string;
 
   @Field(type => String)
@@ -28,7 +28,7 @@ export class Restaurant extends CoreEntity {
 
   @Field(type => Category, { nullable: true })
   @ManyToOne(type => Category, category => category.restaurants, {
-    // 어디와 연결되어 있는지 명시
+    // 어디와 연결되어 있는지 명시, 연결된 entity 의 어느 항목인지 기재
     nullable: true, // category 가 지워져도 restaurant 는 지워지면 안됨
     onDelete: 'SET NULL', // category 가 없는 restaurant 도 있을 수 있음
   })
