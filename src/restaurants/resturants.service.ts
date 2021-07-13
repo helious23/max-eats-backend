@@ -22,6 +22,20 @@ export class RestaurantService {
     private readonly categories: Repository<Category>,
   ) {}
 
+  async getOrCreateCategory(name: string): Promise<Category> {
+    const categoryName = name
+      .trim() // 앞 뒤 공백 제거
+      .toLowerCase(); // 소문자로 변환
+    const categorySlug = categoryName.replace(/ /g, '-'); // 중간 스페이스를 - 로 변환
+    let category = await this.categories.findOne({ slug: categorySlug });
+    if (!category) {
+      category = await this.categories.save(
+        this.categories.create({ slug: categorySlug, name: categoryName }),
+      );
+    }
+    return category;
+  }
+
   async createRestaurant(
     owner: User,
     createRestaurantInput: CreateRestaurantInput,
@@ -29,16 +43,9 @@ export class RestaurantService {
     try {
       const newRestaurant = this.restaurants.create(createRestaurantInput);
       newRestaurant.owner = owner;
-      const categoryName = createRestaurantInput.categorylName
-        .trim() // 앞 뒤 공백 제거
-        .toLowerCase(); // 소문자로 변환
-      const categorySlug = categoryName.replace(/ /g, '-'); // 중간 스페이스를 - 로 변환
-      let category = await this.categories.findOne({ slug: categorySlug });
-      if (!category) {
-        category = await this.categories.save(
-          this.categories.create({ slug: categorySlug, name: categoryName }),
-        );
-      }
+      const category = await this.getOrCreateCategory(
+        createRestaurantInput.categoryName,
+      );
       newRestaurant.category = category;
       await this.restaurants.save(newRestaurant);
       return {
@@ -47,7 +54,7 @@ export class RestaurantService {
     } catch (error) {
       return {
         ok: false,
-        error: '식당을 등록하지 못했습니다.',
+        error: '식당을 등록하지 못했습니다',
       };
     }
   }
@@ -55,5 +62,30 @@ export class RestaurantService {
   async editRestaurant(
     owner: User,
     editResturantInput: EditRestaurantInput,
-  ): Promise<EditRestaurantOutput> {}
+  ): Promise<EditRestaurantOutput> {
+    try {
+      const restaurant = await this.restaurants.findOne(
+        editResturantInput.restaurantId,
+      );
+      if (!restaurant) {
+        return {
+          ok: false,
+          error: '식당을 찾을 수 없습니다',
+        };
+      }
+      if (owner.id !== restaurant.ownerId) {
+        return {
+          ok: false,
+          error: '자신이 등록한 식당만 수정할 수 있습니다',
+        };
+      }
+
+      return { ok: true };
+    } catch (error) {
+      return {
+        ok: false,
+        error: '식당을 수정할 수 없습니다',
+      };
+    }
+  }
 }

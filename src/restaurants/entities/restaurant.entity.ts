@@ -1,7 +1,13 @@
 // Query typeDef for GraphQL
 import { Field, ObjectType, InputType } from '@nestjs/graphql';
 import { IsString, Length } from 'class-validator';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  RelationId,
+} from 'typeorm';
 import { CoreEntity } from '../../common/entities/core.entity';
 import { Category } from './category.entity';
 import { User } from '../../users/entities/user.entity';
@@ -37,4 +43,8 @@ export class Restaurant extends CoreEntity {
   @Field(type => User)
   @ManyToOne(type => User, user => user.restaurants, { onDelete: 'CASCADE' })
   owner: User;
+
+  // owner 의 id 만 가진 field를 만듦 by using @RelationId
+  @RelationId((restaurant: Restaurant) => restaurant.owner)
+  ownerId: number;
 }

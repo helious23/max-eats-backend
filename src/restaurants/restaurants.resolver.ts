@@ -31,12 +31,13 @@ export class ResturantResolver {
 
   @Mutation(returns => EditRestaurantOutput)
   @Role(['Owner'])
-  editRestaurant(
+  async editRestaurant(
     @AuthUser() authUser: User,
     @Args('input') editRestaurantInput: EditRestaurantInput,
-  ): EditRestaurantOutput {
-    return {
-      ok: true,
-    };
+  ): Promise<EditRestaurantOutput> {
+    return await this.restaurantService.editRestaurant(
+      authUser,
+      editRestaurantInput,
+    );
   }
 }

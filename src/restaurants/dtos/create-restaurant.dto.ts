@@ -9,7 +9,7 @@ export class CreateRestaurantInput extends PickType(Restaurant, [
   'address',
 ]) {
   @Field(type => String)
-  categorylName: string;
+  categoryName: string;
 }
 
 @ObjectType()
