@@ -27,8 +27,7 @@ export class RestaurantService {
       newRestaurant.owner = owner;
       const categoryName = createRestaurantInput.categorylName
         .trim() // 앞 뒤 공백 제거
-        .toLowerCase() // 소문자로 변환
-        .replace(/ +/g, '');
+        .toLowerCase(); // 소문자로 변환
       const categorySlug = categoryName.replace(/ /g, '-'); // 중간 스페이스를 - 로 변환
       let category = await this.categories.findOne({ slug: categorySlug });
       if (!category) {

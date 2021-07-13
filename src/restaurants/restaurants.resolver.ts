@@ -12,8 +12,9 @@ import { Role } from 'src/auth/role.decorator';
 @Resolver(of => Restaurant) // decorator 사용으로 graphql schema 작성 할 필요 없음
 export class ResturantResolver {
   constructor(private readonly restaurantService: RestaurantService) {} // inject restaurantService
-  @Role(['Owner'])
+
   @Mutation(retuns => CreateRestaurantOutput)
+  @Role(['Owner']) // owner 만 사용 가능
   async createRestaurant(
     @AuthUser() authUser: User,
     @Args('input') createRestaurantInput: CreateRestaurantInput,

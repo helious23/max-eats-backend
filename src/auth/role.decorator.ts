@@ -1,6 +1,7 @@
 import { SetMetadata } from '@nestjs/common';
 import { UserRole } from '../users/entities/user.entity';
 
-type AllowedRoles = keyof typeof UserRole | 'Any';
+export type AllowedRoles = keyof typeof UserRole | 'Any';
 
+// array of role 이 roles 라는 metadata 에 저장
 export const Role = (roles: AllowedRoles[]) => SetMetadata('roles', roles);
