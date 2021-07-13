@@ -8,6 +8,10 @@ import {
 import { Restaurant } from './entities/restaurant.entity';
 import { User } from '../users/entities/user.entity';
 import { Category } from './entities/category.entity';
+import {
+  EditRestaurantInput,
+  EditRestaurantOutput,
+} from './dtos/edit-restaurant.dto';
 
 @Injectable() // resolver 에 constructor 로 inject 할 수 있게 함
 export class RestaurantService {
@@ -47,4 +51,9 @@ export class RestaurantService {
       };
     }
   }
+
+  async editRestaurant(
+    owner: User,
+    editResturantInput: EditRestaurantInput,
+  ): Promise<EditRestaurantOutput> {}
 }

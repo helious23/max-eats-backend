@@ -8,6 +8,10 @@ import { RestaurantService } from './resturants.service';
 import { AuthUser } from '../auth/auth-user.decorator';
 import { User } from '../users/entities/user.entity';
 import { Role } from 'src/auth/role.decorator';
+import {
+  EditRestaurantOutput,
+  EditRestaurantInput,
+} from './dtos/edit-restaurant.dto';
 
 @Resolver(of => Restaurant) // decorator 사용으로 graphql schema 작성 할 필요 없음
 export class ResturantResolver {
@@ -23,5 +27,16 @@ export class ResturantResolver {
       authUser,
       createRestaurantInput,
     );
+  }
+
+  @Mutation(returns => EditRestaurantOutput)
+  @Role(['Owner'])
+  editRestaurant(
+    @AuthUser() authUser: User,
+    @Args('input') editRestaurantInput: EditRestaurantInput,
+  ): EditRestaurantOutput {
+    return {
+      ok: true,
+    };
   }
 }

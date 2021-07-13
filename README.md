@@ -2,7 +2,7 @@
 
 The backend of Max Eats Clone
 
-## User Entity:
+## User Entity
 - [X] id
 - [X] createdAt
 - [X] updatedAt
@@ -18,7 +18,20 @@ The backend of Max Eats Clone
 - [X] Verify Email
 
 ## Resturant Model
-- [ ] Name
-- [ ] Category
-- [ ] Address
-- [ ] Cover Image
+- [x] Name
+- [x] Category
+- [x] Address
+- [x] Cover Image
+
+## Restaurant CRUD
+- [ ] Edit Restaurant
+- [ ] Delete Restaurant
+
+- [ ] See categories
+- [ ] See Restaurants by Category (pagination)
+- [ ] See Restaurants (pagination)
+- [ ] See Restaurant  
+
+- [ ] Create Dish
+- [ ] Edit Dish
+- [ ] Delete Dish
