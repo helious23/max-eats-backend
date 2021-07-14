@@ -30,7 +30,7 @@ import {
 export class RestaurantService {
   constructor(
     @InjectRepository(Restaurant) // Restaurant entity 로 repository 를 만듦
-    private readonly restaurants: Repository<Restaurant>, // restaurants 라는 이름으로 Restaurant entity 를 Repository  type 으로 만듦
+    private readonly restaurants: Repository<Restaurant>, // restaurants 라는 이름으로 Restaurant entity 를 Repository type 으로 만듦
     private readonly categories: CategoryRepository, // custom repository
   ) {}
 
@@ -143,7 +143,7 @@ export class RestaurantService {
     }
   }
 
-  countResturant(category: Category) {
+  countRestaurant(category: Category) {
     return this.restaurants.count({ category });
   }
 
@@ -167,7 +167,7 @@ export class RestaurantService {
         skip: (page - 1) * 25,
       });
       category.restaurants = restaurants;
-      const totalResults = await this.countResturant(category);
+      const totalResults = await this.countRestaurant(category);
       return {
         ok: true,
         category,

@@ -8,9 +8,9 @@ import { User } from '../users/entities/user.entity';
 export class AuthGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
   canActivate(context: ExecutionContext) {
-    const roles = this.reflector.get<AllowedRoles>(
-      'roles',
-      context.getHandler(),
+    const roles = this.reflector.get<AllowedRoles>( // metadata의 type
+      'roles', // metadata key
+      context.getHandler(), // metadata value
     ); // 'roles' 라는 metadata 를 읽어옴
     if (!roles) {
       // resolver 가 public 임

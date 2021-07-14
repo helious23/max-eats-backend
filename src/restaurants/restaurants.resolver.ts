@@ -100,7 +100,7 @@ export class CategoryResolver {
   @ResolveField(type => Int) // dynamic field : entity나 db 에 없지만 request 마다 계산되는 field
   restaurantCount(@Parent() category: Category): Promise<number> {
     // @Parent() 로 부모에 접근 가능
-    return this.restaurantService.countResturant(category);
+    return this.restaurantService.countRestaurant(category);
   }
 
   @Query(type => AllCategoriesOutput)
