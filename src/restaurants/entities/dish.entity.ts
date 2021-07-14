@@ -4,12 +4,25 @@ import { Field, ObjectType, InputType, Int } from '@nestjs/graphql';
 import { CoreEntity } from '../../common/entities/core.entity';
 import { Restaurant } from './restaurant.entity';
 
+@InputType('DishOptionInputType', { isAbstract: true })
+@ObjectType()
+class DishOption {
+  @Field(type => String)
+  name: string;
+
+  @Field(type => [String], { nullable: true })
+  choices?: string[];
+
+  @Field(type => Int)
+  extra: number;
+}
+
 @InputType('DishInputType', { isAbstract: true })
 @ObjectType()
 @Entity()
 export class Dish extends CoreEntity {
   @Field(type => String)
-  @Column({ unique: true })
+  @Column()
   @IsString()
   @Length(2)
   name: string;
@@ -17,10 +30,10 @@ export class Dish extends CoreEntity {
   @Field(type => Int)
   @Column()
   @IsNumber()
-  prive: number;
+  price: number;
 
-  @Field(type => String)
-  @Column({ unique: true })
+  @Field(type => String, { nullable: true })
+  @Column({ nullable: true })
   @IsString()
   photo: string;
 
@@ -30,7 +43,7 @@ export class Dish extends CoreEntity {
   @Length(5, 140)
   description: string;
 
-  @Field(type => Restaurant, { nullable: true })
+  @Field(type => Restaurant)
   @ManyToOne(type => Restaurant, restaurant => restaurant.menu, {
     onDelete: 'CASCADE',
   })
@@ -38,4 +51,8 @@ export class Dish extends CoreEntity {
 
   @RelationId((dish: Dish) => dish.restaurant)
   restaurantId: number;
+
+  @Field(type => [DishOption], { nullable: true })
+  @Column({ type: 'json', nullable: true })
+  options?: DishOption;
 }

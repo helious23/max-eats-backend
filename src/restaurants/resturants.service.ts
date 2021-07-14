@@ -13,6 +13,7 @@ import { AllCategoriesOutput } from './dtos/all-categories.dto';
 import { CategoryInput, CategoryOutput } from './dtos/category.dto';
 import { RestaurantsInput, RestaurantsOutput } from './dtos/restaurants.dto';
 import { RestaurantInput, RestaurantOutput } from './dtos/restaurant.dto';
+import { CreateDishInput, CreateDishOutput } from './dtos/create-dish.dto';
 import {
   SearchRestaurantInput,
   SearchRestaurantOutput,
@@ -205,7 +206,9 @@ export class RestaurantService {
     restaurantId,
   }: RestaurantInput): Promise<RestaurantOutput> {
     try {
-      const restaurant = await this.restaurants.findOne(restaurantId);
+      const restaurant = await this.restaurants.findOne(restaurantId, {
+        relations: ['menu'], // restaurant 을 볼 때 menu 도 볼 수 있게 relations 걸어줌
+      });
       if (!restaurant) {
         return {
           ok: false,
@@ -248,5 +251,12 @@ export class RestaurantService {
         error: '식당 검색을 하지 못했습니다',
       };
     }
+  }
+
+  async createDish(
+    owner: User,
+    createDishInput: CreateDishInput,
+  ): Promise<CreateDishOutput> {
+    return { ok: false };
   }
 }
