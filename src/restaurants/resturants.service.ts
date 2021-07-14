@@ -7,6 +7,7 @@ import {
 } from './dtos/create-restaurant.dto';
 import { Restaurant } from './entities/restaurant.entity';
 import { User } from '../users/entities/user.entity';
+import { CategoryRepository } from './repositories/category.respository';
 import { Category } from './entities/category.entity';
 import {
   EditRestaurantInput,
@@ -18,23 +19,8 @@ export class RestaurantService {
   constructor(
     @InjectRepository(Restaurant) // Restaurant entity 로 repository 를 만듦
     private readonly restaurants: Repository<Restaurant>, // restaurants 라는 이름으로 Restaurant entity 를 Repository  type 으로 만듦
-    @InjectRepository(Category)
-    private readonly categories: Repository<Category>,
+    private readonly categories: CategoryRepository, // custom repository
   ) {}
-
-  async getOrCreateCategory(name: string): Promise<Category> {
-    const categoryName = name
-      .trim() // 앞 뒤 공백 제거
-      .toLowerCase(); // 소문자로 변환
-    const categorySlug = categoryName.replace(/ /g, '-'); // 중간 스페이스를 - 로 변환
-    let category = await this.categories.findOne({ slug: categorySlug });
-    if (!category) {
-      category = await this.categories.save(
-        this.categories.create({ slug: categorySlug, name: categoryName }),
-      );
-    }
-    return category;
-  }
 
   async createRestaurant(
     owner: User,
@@ -43,7 +29,7 @@ export class RestaurantService {
     try {
       const newRestaurant = this.restaurants.create(createRestaurantInput);
       newRestaurant.owner = owner;
-      const category = await this.getOrCreateCategory(
+      const category = await this.categories.getOrCreate(
         createRestaurantInput.categoryName,
       );
       newRestaurant.category = category;
@@ -61,11 +47,11 @@ export class RestaurantService {
 
   async editRestaurant(
     owner: User,
-    editResturantInput: EditRestaurantInput,
+    editRestaurantInput: EditRestaurantInput,
   ): Promise<EditRestaurantOutput> {
     try {
       const restaurant = await this.restaurants.findOne(
-        editResturantInput.restaurantId,
+        editRestaurantInput.restaurantId,
       );
       if (!restaurant) {
         return {
@@ -79,7 +65,20 @@ export class RestaurantService {
           error: '자신이 등록한 식당만 수정할 수 있습니다',
         };
       }
-
+      let category: Category = null;
+      if (editRestaurantInput.categoryName) {
+        category = await this.categories.getOrCreate(
+          editRestaurantInput.categoryName,
+        );
+      }
+      await this.restaurants.save([
+        // update 시에는 Array 를 넘겨줘야됨
+        {
+          id: editRestaurantInput.restaurantId,
+          ...editRestaurantInput,
+          ...(category && { category }), // category 가 있을 때만 update
+        },
+      ]);
       return { ok: true };
     } catch (error) {
       return {
