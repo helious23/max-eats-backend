@@ -30,9 +30,15 @@ The backend of Max Eats Clone
 - [x] See categories
 - [x] See Restaurants by Category (pagination)
 - [x] See Restaurants (pagination)
-- [ ] Search Restaurant
-- [ ] See Restaurant  
+- [x] See Restaurant  
+- [x] Search Restaurant
 
 - [ ] Create Dish
 - [ ] Edit Dish
 - [ ] Delete Dish
+
+## Orders CRUD
+
+## Orders Subscription(Owner, Customer, Delivery)
+
+## Payment (CRON)
