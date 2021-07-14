@@ -11,6 +11,7 @@ import { CategoryRepository } from './repositories/category.respository';
 import { Category } from './entities/category.entity';
 import { AllCategoriesOutput } from './dtos/all-categories.dto';
 import { CategoryInput, CategoryOutput } from './dtos/category.dto';
+import { RestaurantsInput, RestaurantsOutput } from './dtos/restaurants.dto';
 import {
   DeleteRestaurantInput,
   DeleteRestaurantOutput,
@@ -171,6 +172,26 @@ export class RestaurantService {
       return {
         ok: false,
         error: '카테고리를 불러오지 못했습니다',
+      };
+    }
+  }
+
+  async allRestaurants({ page }: RestaurantsInput): Promise<RestaurantsOutput> {
+    try {
+      const [results, totalResults] = await this.restaurants.findAndCount({
+        take: 25,
+        skip: (page - 1) * 25,
+      });
+      return {
+        ok: true,
+        results,
+        totalPages: Math.ceil(totalResults / 25),
+        totalResults,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: '식당을 불러오지 못했습니다',
       };
     }
   }

@@ -28,8 +28,9 @@ The backend of Max Eats Clone
 - [x] Delete Restaurant
 
 - [x] See categories
-- [ ] See Restaurants by Category (pagination)
-- [ ] See Restaurants (pagination)
+- [x] See Restaurants by Category (pagination)
+- [x] See Restaurants (pagination)
+- [ ] Search Restaurant
 - [ ] See Restaurant  
 
 - [ ] Create Dish
