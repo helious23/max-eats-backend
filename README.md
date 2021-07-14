@@ -24,7 +24,7 @@ The backend of Max Eats Clone
 - [x] Cover Image
 
 ## Restaurant CRUD
-- [ ] Edit Restaurant
+- [x] Edit Restaurant
 - [ ] Delete Restaurant
 
 - [ ] See categories

@@ -10,6 +10,10 @@ import { User } from '../users/entities/user.entity';
 import { CategoryRepository } from './repositories/category.respository';
 import { Category } from './entities/category.entity';
 import {
+  DeleteRestaurantInput,
+  DeleteRestaurantOutput,
+} from './dtos/delete-restaurant.dto';
+import {
   EditRestaurantInput,
   EditRestaurantOutput,
 } from './dtos/edit-restaurant.dto';
@@ -74,7 +78,7 @@ export class RestaurantService {
       await this.restaurants.save([
         // update 시에는 Array 를 넘겨줘야됨
         {
-          id: editRestaurantInput.restaurantId,
+          id: editRestaurantInput.restaurantId, // id가 없으면 새로운 entity 생성함
           ...editRestaurantInput,
           ...(category && { category }), // category 가 있을 때만 update
         },
@@ -84,6 +88,34 @@ export class RestaurantService {
       return {
         ok: false,
         error: '식당을 수정할 수 없습니다',
+      };
+    }
+  }
+
+  async deleteRestaurnat(
+    owner: User,
+    { restaurantId }: DeleteRestaurantInput,
+  ): Promise<DeleteRestaurantOutput> {
+    try {
+      const restaurant = await this.restaurants.findOne(restaurantId);
+      if (!restaurant) {
+        return {
+          ok: false,
+          error: '식당을 찾을 수 없습니다',
+        };
+      }
+      if (owner.id !== restaurant.ownerId) {
+        return {
+          ok: false,
+          error: '자신이 등록한 식당만 삭제할 수 있습니다',
+        };
+      }
+      await this.restaurants.delete(restaurantId);
+      return { ok: true };
+    } catch (error) {
+      return {
+        ok: false,
+        error: '식당을 삭제할 수 업습니다',
       };
     }
   }
