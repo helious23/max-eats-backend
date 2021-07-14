@@ -26,6 +26,7 @@ import {
 } from './dtos/edit-restaurant.dto';
 import { Category } from './entities/category.entity';
 import { AllCategoriesOutput } from './dtos/all-categories.dto';
+import { CategoryInput, CategoryOutput } from './dtos/category.dto';
 
 @Resolver(of => Restaurant) // decorator 사용으로 graphql schema 작성 할 필요 없음
 export class ResturantResolver {
@@ -71,11 +72,17 @@ export class CategoryResolver {
 
   @ResolveField(type => Int) // dynamic field : entity나 db 에 없지만 request 마다 계산되는 field
   restaurantCount(@Parent() category: Category): Promise<number> {
+    // @Parent() 로 부모에 접근 가능
     return this.restaurantService.countResturant(category);
   }
 
   @Query(type => AllCategoriesOutput)
   allCategories(): Promise<AllCategoriesOutput> {
     return this.restaurantService.allCategories();
+  }
+
+  @Query(type => CategoryOutput)
+  category(@Args() categoryInput: CategoryInput): Promise<CategoryOutput> {
+    return this.restaurantService.findCategoryBySlug(categoryInput);
   }
 }
