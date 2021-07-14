@@ -1,4 +1,11 @@
-import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  Int,
+  Mutation,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
 import {
   CreateRestaurantInput,
   CreateRestaurantOutput,
@@ -16,6 +23,8 @@ import {
   EditRestaurantOutput,
   EditRestaurantInput,
 } from './dtos/edit-restaurant.dto';
+import { Category } from './entities/category.entity';
+import { AllCategoriesOutput } from './dtos/all-categories.dto';
 
 @Resolver(of => Restaurant) // decorator 사용으로 graphql schema 작성 할 필요 없음
 export class ResturantResolver {
@@ -52,5 +61,20 @@ export class ResturantResolver {
       owner,
       deleteRestaurantInput,
     );
+  }
+}
+
+@Resolver(of => Category)
+export class CategoryResolver {
+  constructor(private readonly restaurantService: RestaurantService) {}
+
+  @ResolveField(type => Int) // dynamic field : entity나 db 에 없지만 request 마다 계산되는 field
+  restaurantCount(): number {
+    return 80;
+  }
+
+  @Query(type => AllCategoriesOutput)
+  allCategories(): Promise<AllCategoriesOutput> {
+    return this.restaurantService.allCategories();
   }
 }

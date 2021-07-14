@@ -9,6 +9,7 @@ import { Restaurant } from './entities/restaurant.entity';
 import { User } from '../users/entities/user.entity';
 import { CategoryRepository } from './repositories/category.respository';
 import { Category } from './entities/category.entity';
+import { AllCategoriesOutput } from './dtos/all-categories.dto';
 import {
   DeleteRestaurantInput,
   DeleteRestaurantOutput,
@@ -116,6 +117,21 @@ export class RestaurantService {
       return {
         ok: false,
         error: '식당을 삭제할 수 업습니다',
+      };
+    }
+  }
+
+  async allCategories(): Promise<AllCategoriesOutput> {
+    try {
+      const categories = await this.categories.find();
+      return {
+        ok: true,
+        categories,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: '카테고리를 볼 수 없습니다.',
       };
     }
   }
