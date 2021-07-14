@@ -27,7 +27,7 @@ The backend of Max Eats Clone
 - [x] Edit Restaurant
 - [x] Delete Restaurant
 
-- [ ] See categories
+- [x] See categories
 - [ ] See Restaurants by Category (pagination)
 - [ ] See Restaurants (pagination)
 - [ ] See Restaurant  
