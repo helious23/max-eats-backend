@@ -14,6 +14,7 @@ import { CategoryInput, CategoryOutput } from './dtos/category.dto';
 import { RestaurantsInput, RestaurantsOutput } from './dtos/restaurants.dto';
 import { RestaurantInput, RestaurantOutput } from './dtos/restaurant.dto';
 import { CreateDishInput, CreateDishOutput } from './dtos/create-dish.dto';
+import { Dish } from './entities/dish.entity';
 import {
   SearchRestaurantInput,
   SearchRestaurantOutput,
@@ -26,12 +27,14 @@ import {
   EditRestaurantInput,
   EditRestaurantOutput,
 } from './dtos/edit-restaurant.dto';
+import create from 'got/dist/source/create';
 
 @Injectable() // resolver 에 constructor 로 inject 할 수 있게 함
 export class RestaurantService {
   constructor(
     @InjectRepository(Restaurant) // Restaurant entity 로 repository 를 만듦
     private readonly restaurants: Repository<Restaurant>, // restaurants 라는 이름으로 Restaurant entity 를 Repository type 으로 만듦
+    @InjectRepository(Dish) private readonly dishes: Repository<Dish>,
     private readonly categories: CategoryRepository, // custom repository
   ) {}
 
@@ -257,6 +260,33 @@ export class RestaurantService {
     owner: User,
     createDishInput: CreateDishInput,
   ): Promise<CreateDishOutput> {
-    return { ok: false };
+    try {
+      const restaurant = await this.restaurants.findOne(
+        createDishInput.resturantId,
+      );
+      if (!restaurant) {
+        return {
+          ok: false,
+          error: '식당을 찾지 못했습니다',
+        };
+      }
+      if (owner.id !== restaurant.ownerId) {
+        return {
+          ok: false,
+          error: '자신이 등록한 식당의 메뉴만 만들수 있습니다',
+        };
+      }
+      await this.dishes.save(
+        this.dishes.create({ ...createDishInput, restaurant }),
+      );
+      return {
+        ok: true,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: '메뉴를 만들지 못했습니다',
+      };
+    }
   }
 }
