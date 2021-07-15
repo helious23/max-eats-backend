@@ -21,6 +21,7 @@ import { RestaurantsModule } from './restaurants/restaurants.module';
 import { Dish } from './restaurants/entities/dish.entity';
 import { OrdersModule } from './orders/orders.module';
 import { Order } from './orders/entities/order.entity';
+import { OrderItem } from './orders/entities/order-item.entity';
 
 @Module({
   imports: [
@@ -52,7 +53,15 @@ import { Order } from './orders/entities/order.entity';
       synchronize: process.env.NODE_ENV !== 'prod', // auto migration. production 시에는 false
       logging:
         process.env.NODE_ENV !== 'prod' && process.env.NODE_ENV !== 'test', // check log. production 시에는 false
-      entities: [User, Verification, Restaurant, Category, Dish, Order], // going to DB(table)
+      entities: [
+        User,
+        Verification,
+        Restaurant,
+        Category,
+        Dish,
+        Order,
+        OrderItem,
+      ], // going to DB(table)
     }),
     GraphQLModule.forRoot({
       autoSchemaFile: true, // schemaFile 메모리에 저장
