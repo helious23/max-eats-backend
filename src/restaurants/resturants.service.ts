@@ -28,6 +28,8 @@ import {
   EditRestaurantOutput,
 } from './dtos/edit-restaurant.dto';
 import create from 'got/dist/source/create';
+import { EditDishInput, EditDishOutput } from './dtos/edit-dish.dto';
+import { DeleteDishInput, DeleteDishOutput } from './dtos/delete-dish.dto';
 
 @Injectable() // resolver 에 constructor 로 inject 할 수 있게 함
 export class RestaurantService {
@@ -286,6 +288,75 @@ export class RestaurantService {
       return {
         ok: false,
         error: '메뉴를 만들지 못했습니다',
+      };
+    }
+  }
+
+  async editDish(
+    owner: User,
+    editDishInput: EditDishInput,
+  ): Promise<EditDishOutput> {
+    try {
+      const dish = await this.dishes.findOne(editDishInput.dishId, {
+        relations: ['restaurant'],
+      });
+      if (!dish) {
+        return {
+          ok: false,
+          error: '메뉴를 찾을 수 없습니다.',
+        };
+      }
+      if (dish.restaurant.ownerId !== owner.id) {
+        return {
+          ok: false,
+          error: '자신이 등록한 식당의 메뉴만 수정할 수 있습니다',
+        };
+      }
+      await this.dishes.save([
+        {
+          id: editDishInput.dishId,
+          ...editDishInput,
+        },
+      ]);
+      return {
+        ok: true,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: '메뉴를 수정하지 못했습니다',
+      };
+    }
+  }
+
+  async deleteDish(
+    owner: User,
+    { dishId }: DeleteDishInput,
+  ): Promise<DeleteDishOutput> {
+    try {
+      const dish = await this.dishes.findOne(dishId, {
+        relations: ['restaurant'], // dish.restaurant.ownerId 값이 필요하므로 dish 에서 restaurant 를 불러와야됨
+      });
+      if (!dish) {
+        return {
+          ok: false,
+          error: '메뉴를 찾을 수 없습니다',
+        };
+      }
+      if (dish.restaurant.ownerId !== owner.id) {
+        return {
+          ok: false,
+          error: '자신이 등록한 식당의 메뉴만 삭제할 수 있습니다',
+        };
+      }
+      await this.dishes.delete(dishId);
+      return {
+        ok: true,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: '메뉴를 삭제하지 못했습니다.',
       };
     }
   }

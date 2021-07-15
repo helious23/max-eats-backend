@@ -33,9 +33,9 @@ The backend of Max Eats Clone
 - [x] See Restaurant  
 - [x] Search Restaurant
 
-- [ ] Create Dish
-- [ ] Edit Dish
-- [ ] Delete Dish
+- [x] Create Dish
+- [x] Edit Dish
+- [x] Delete Dish
 
 ## Orders CRUD
 
