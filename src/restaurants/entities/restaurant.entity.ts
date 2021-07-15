@@ -13,6 +13,7 @@ import { Category } from './category.entity';
 import { User } from '../../users/entities/user.entity';
 import { Dish } from './dish.entity';
 import { OneToMany } from 'typeorm';
+import { Order } from '../../orders/entities/order.entity';
 
 @InputType('RestaurantInputType', { isAbstract: true }) // dto 에 extends 할 때만 Inputtype 으로 변경
 @ObjectType() // for graphQL schema
@@ -45,6 +46,10 @@ export class Restaurant extends CoreEntity {
   @Field(type => User)
   @ManyToOne(type => User, user => user.restaurants, { onDelete: 'CASCADE' })
   owner: User;
+
+  @Field(type => [Order])
+  @OneToMany(type => Order, order => order.restaurant)
+  orders: Order[];
 
   // owner 의 id 만 가진 field를 만듦 by using @RelationId
   @RelationId((restaurant: Restaurant) => restaurant.owner)
