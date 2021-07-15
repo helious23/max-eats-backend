@@ -27,6 +27,14 @@ export class OrderService {
           error: '식당을 찾지 못했습니다',
         };
       }
+      const items = [];
+      const order = await this.orders.save(
+        this.orders.create({
+          customer,
+          restaurant,
+        }),
+      );
+      console.log(order);
     } catch (error) {
       return {
         ok: false,
