@@ -3,11 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from './entities/order.entity';
 import { Repository } from 'typeorm';
 import { CreateOrderInput, CreateOrderOutput } from './dtos/create-order.dto';
-import { User } from '../users/entities/user.entity';
+import { User, UserRole } from '../users/entities/user.entity';
 import { Restaurant } from '../restaurants/entities/restaurant.entity';
 import { OrderItem } from './entities/order-item.entity';
 import { Dish } from '../restaurants/entities/dish.entity';
 import { cloneSubschemaConfig } from 'graphql-tools';
+import { GetOrdersInput, GetOrdersOutput } from './dtos/get-orders.dto';
+import { GetOrderInput, GetOrderOutput } from './dtos/get-order.dto';
 
 @Injectable()
 export class OrderService {
@@ -101,6 +103,96 @@ export class OrderService {
       return {
         ok: false,
         error: '주문을 만들지 못했습니다',
+      };
+    }
+  }
+
+  async getOrders(
+    user: User,
+    { status }: GetOrdersInput,
+  ): Promise<GetOrdersOutput> {
+    let orders: Order[];
+    try {
+      if (user.role === UserRole.Client) {
+        orders = await this.orders.find({
+          where: {
+            customer: user,
+            ...(status && { status }), // input 에 status 가 있을 경우 status 가 같은 값만 find
+          },
+        });
+      } else if (user.role === UserRole.Delivery) {
+        orders = await this.orders.find({
+          where: {
+            driver: user,
+            ...(status && { status }), // input 에 status 가 있을 경우 status 가 같은 값만 find
+          },
+        });
+      } else if (user.role === UserRole.Owner) {
+        const restaurants = await this.restaurants.find({
+          where: {
+            owner: user,
+          },
+          relations: ['orders'],
+        });
+        orders = restaurants.map(restaurant => restaurant.orders).flat(1);
+        if (status) {
+          orders = orders.filter(order => order.status === status); // 각각의 order의 status 가 input 의 status 와 같은 경우만 filter
+        }
+      }
+      return {
+        ok: true,
+        orders,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: '주문을 불러오지 못했습니다',
+      };
+    }
+  }
+
+  async getOrder(
+    user: User,
+    { id: orderId }: GetOrderInput,
+  ): Promise<GetOrderOutput> {
+    try {
+      const order = await this.orders.findOne(orderId, {
+        relations: ['restaurant'],
+      });
+
+      if (!order) {
+        return {
+          ok: false,
+          error: '주문을 찾지 못했습니다',
+        };
+      }
+      let canSee = true;
+      if (user.role === UserRole.Client && order.customerId !== user.id) {
+        canSee = false;
+      }
+      if (user.role === UserRole.Delivery && order.driverId !== user.id) {
+        canSee = false;
+      }
+      if (
+        user.role === UserRole.Owner &&
+        order.restaurant.ownerId !== user.id
+      ) {
+        canSee = false;
+      }
+      if (!canSee) {
+        return {
+          ok: false,
+          error: '주문을 확인할 수 없습니다',
+        };
+      }
+      return {
+        ok: true,
+        order,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: '주문을 불러오지 못했습니다',
       };
     }
   }

@@ -38,7 +38,11 @@ The backend of Max Eats Clone
 - [x] Delete Dish
 
 ## Orders CRUD
-
+- [x] Create Order
+- [x] Read Order
+- [ ] Edit Order
+- [ ] Delete Order
+   
 ## Orders Subscription(Owner, Customer, Delivery)
 
 ## Payment (CRON)
