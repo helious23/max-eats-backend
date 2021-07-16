@@ -66,10 +66,13 @@ import { OrderItem } from './orders/entities/order-item.entity';
     GraphQLModule.forRoot({
       installSubscriptionHandlers: true, // 서버가 웹소켓 기능을 가지게 됨
       autoSchemaFile: true, // schemaFile 메모리에 저장
-      context: ({ req }) => {
+      context: ({ req, connection }) => {
         // graphQL context 로 request 의 user 를 공유
-        console.log(req);
-        return { user: req['user'] };
+        if (req) {
+          return { user: req['user'] };
+        } else {
+          console.log(connection);
+        }
       },
     }),
     JwtModule.forRoot({
