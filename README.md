@@ -41,7 +41,6 @@ The backend of Max Eats Clone
 - [x] Create Order
 - [x] Read Order
 - [ ] Edit Order
-- [ ] Delete Order
    
 ## Orders Subscription(Owner, Customer, Delivery)
 
