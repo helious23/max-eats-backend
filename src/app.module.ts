@@ -64,8 +64,13 @@ import { OrderItem } from './orders/entities/order-item.entity';
       ], // going to DB(table)
     }),
     GraphQLModule.forRoot({
+      installSubscriptionHandlers: true, // 서버가 웹소켓 기능을 가지게 됨
       autoSchemaFile: true, // schemaFile 메모리에 저장
-      context: ({ req }) => ({ user: req['user'] }), // graphQL context 로 request 의 user 를 공유
+      context: ({ req }) => {
+        // graphQL context 로 request 의 user 를 공유
+        console.log(req);
+        return { user: req['user'] };
+      },
     }),
     JwtModule.forRoot({
       privateKey: process.env.PRIVATE_KEY,

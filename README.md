@@ -40,7 +40,7 @@ The backend of Max Eats Clone
 ## Orders CRUD
 - [x] Create Order
 - [x] Read Order
-- [ ] Edit Order
+- [X] Edit Order status
    
 ## Orders Subscription(Owner, Customer, Delivery)
 
