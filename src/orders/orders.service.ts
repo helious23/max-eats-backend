@@ -10,7 +10,11 @@ import { Dish } from '../restaurants/entities/dish.entity';
 import { GetOrdersInput, GetOrdersOutput } from './dtos/get-orders.dto';
 import { GetOrderInput, GetOrderOutput } from './dtos/get-order.dto';
 import { EditOrderInput, EditOrderOutput } from './dtos/edit-order.dto';
-import { PUB_SUB, NEW_PENDING_ORDER } from '../common/common.constants';
+import {
+  PUB_SUB,
+  NEW_PENDING_ORDER,
+  NEW_COOKED_ORDER,
+} from '../common/common.constants';
 import { PubSub } from 'graphql-subscriptions';
 
 @Injectable()
@@ -231,6 +235,7 @@ export class OrderService {
           error: '주문을 확인할 수 없습니다',
         };
       }
+
       let canEdit = true;
       if (user.role === UserRole.Client) {
         canEdit = false;
@@ -255,12 +260,21 @@ export class OrderService {
           error: '주문을 수정할 수 없습니다',
         };
       }
-      await this.orders.save([
-        {
-          id: orderId,
-          status,
-        },
-      ]);
+
+      await this.orders.save({
+        // create 가 없는 save 는 변경된 entity 만 return 사용 X
+        id: orderId,
+        status,
+      });
+
+      if (user.role === UserRole.Owner) {
+        if (status === OrderStatus.Cooked) {
+          await this.pubSub.publish(NEW_COOKED_ORDER, {
+            coockedOrders: { ...order, status }, // 기존 order 에 변경된 status 만 바꿔서 payload 로 전달
+          });
+        }
+      }
+
       return {
         ok: true,
       };
