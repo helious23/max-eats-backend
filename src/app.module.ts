@@ -68,11 +68,10 @@ import { OrderItem } from './orders/entities/order-item.entity';
       autoSchemaFile: true, // schemaFile 메모리에 저장
       context: ({ req, connection }) => {
         // graphQL context 로 request 의 user 를 공유
-        if (req) {
-          return { user: req['user'] };
-        } else {
-          console.log(connection);
-        }
+        const TOKEN_KEY = 'x-jwt';
+        return {
+          token: req ? req.headers[TOKEN_KEY] : connection.context[TOKEN_KEY],
+        };
       },
     }),
     JwtModule.forRoot({
@@ -92,12 +91,4 @@ import { OrderItem } from './orders/entities/order-item.entity';
   controllers: [],
   providers: [],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(JwtMiddleware).forRoutes({
-      //.exclude : 특정 route 만 제외함
-      path: '/graphql', // 이 경로일 경우에
-      method: RequestMethod.POST, // POST, GET, DELETE 등 사용할 method 지정 가능(ALL 도 가능)
-    });
-  }
-}
+export class AppModule {}
