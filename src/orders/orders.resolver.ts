@@ -56,10 +56,11 @@ export class OrderResolver {
   }
 
   @Subscription(returns => Order, {
-    filter: (payload, _, context) => {
-      console.log(payload);
-      return true;
+    filter: ({ pendingOrders: { ownerId } }, _, { user }) => {
+      return ownerId === user.id;
     },
+    resolve: ({ pendingOrders: { order } }) => order,
+    // @Subscription(returns => Order) 이므로 resolve 로 order 를 return 하게 바꿔야됨
   })
   @Role(['Owner'])
   pendingOrders() {

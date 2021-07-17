@@ -7,7 +7,6 @@ import { User, UserRole } from '../users/entities/user.entity';
 import { Restaurant } from '../restaurants/entities/restaurant.entity';
 import { OrderItem } from './entities/order-item.entity';
 import { Dish } from '../restaurants/entities/dish.entity';
-import { cloneSubschemaConfig } from 'graphql-tools';
 import { GetOrdersInput, GetOrdersOutput } from './dtos/get-orders.dto';
 import { GetOrderInput, GetOrderOutput } from './dtos/get-order.dto';
 import { EditOrderInput, EditOrderOutput } from './dtos/edit-order.dto';
@@ -40,6 +39,8 @@ export class OrderService {
           error: '식당을 찾을 수 없습니다',
         };
       }
+
+      // ---------------------------------- price ---------------------------------- //
 
       let orderFinalPrice = 0; // 최종 가격 설정
       const orderItems: OrderItem[] = [];
@@ -100,8 +101,13 @@ export class OrderService {
           items: orderItems,
         }),
       );
-      await this.pubSub.publish(NEW_PENDING_ORDER, { pendingOrders: order });
-      // new_pending_order 이름으로 order 를 pendingOrders subscription 으로 publish
+
+      // ---------------------------------- subscription ---------------------------------- //
+
+      await this.pubSub.publish(NEW_PENDING_ORDER, {
+        pendingOrders: { order, ownerId: restaurant.ownerId },
+      });
+      // new_pending_order 이름으로 order 를 pendingOrders subscription 의 payload로 publish
       return {
         ok: true,
       };
