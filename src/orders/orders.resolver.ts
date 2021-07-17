@@ -8,13 +8,16 @@ import { Role } from 'src/auth/role.decorator';
 import { GetOrdersOutput, GetOrdersInput } from './dtos/get-orders.dto';
 import { GetOrderOutput, GetOrderInput } from './dtos/get-order.dto';
 import { EditOrderOutput, EditOrderInput } from './dtos/edit-order.dto';
+import { Inject } from '@nestjs/common';
+import { PUB_SUB } from '../common/common.constants';
 import { PubSub } from 'graphql-subscriptions';
-
-const pubsub = new PubSub();
 
 @Resolver(of => Order)
 export class OrderResolver {
-  constructor(private readonly orderService: OrderService) {}
+  constructor(
+    private readonly orderService: OrderService,
+    @Inject(PUB_SUB) private readonly pubSub: PubSub,
+  ) {}
 
   @Mutation(returns => CreateOrderOutput)
   @Role(['Client'])
@@ -54,7 +57,7 @@ export class OrderResolver {
 
   @Mutation(returns => Boolean)
   potatoReady() {
-    pubsub.publish('hotPotatos', {
+    this.pubSub.publish('hotPotatos', {
       readyPotato: 'Your potato is ready. Love you.',
     });
     return true;
@@ -64,6 +67,6 @@ export class OrderResolver {
   @Role(['Any'])
   readyPotato(@AuthUser() user: User) {
     console.log(user);
-    return pubsub.asyncIterator('hotPotatos');
+    return this.pubSub.asyncIterator('hotPotatos');
   }
 }
