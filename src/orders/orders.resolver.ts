@@ -65,7 +65,12 @@ export class OrderResolver {
 
   @Subscription(returns => String, {
     filter: ({ readyPotato }, { potatoId }) => {
-      return readyPotato === potatoId;
+      // filter: (payload: from mutation, variable: from mutation, context: by guard)
+      return readyPotato === potatoId; // should return boolean
+    },
+    resolve: ({ readyPotato }) => {
+      // transform the payload
+      return `Your potato with the id ${readyPotato} is ready!`; // should return type of subscription
     },
   })
   @Role(['Any'])
