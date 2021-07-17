@@ -43,9 +43,9 @@ The backend of Max Eats Clone
 - [X] Edit Order status
    
 ## Orders Subscription
-- [ ] Pending Orders (Subscription: newOrder) (trigger: createOrder(newOrder))
+- [x] Pending Orders (Subscription: newOrder) (trigger: createOrder(newOrder))
 - [ ] Order Status (Client, Delivery, Owner) (Sub: orderUpdate) (Trigger: editOrder(orderUpdate))
-- [ ] Pending Pickup Order (Delivery) (Sub: orderUpdate) (Trigger: editOrder(orderUpdate))
+- [x] Pending Pickup Order (Delivery) (Sub: orderUpdate) (Trigger: editOrder(orderUpdate))
 
 
 ## Payment (CRON)

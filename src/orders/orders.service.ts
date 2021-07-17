@@ -16,6 +16,7 @@ import {
   NEW_COOKED_ORDER,
 } from '../common/common.constants';
 import { PubSub } from 'graphql-subscriptions';
+import { NEW_ORDER_UPDATE } from '../common/common.constants';
 
 @Injectable()
 export class OrderService {
@@ -266,15 +267,15 @@ export class OrderService {
         id: orderId,
         status,
       });
-
+      const newOrder = { ...order, status };
       if (user.role === UserRole.Owner) {
         if (status === OrderStatus.Cooked) {
           await this.pubSub.publish(NEW_COOKED_ORDER, {
-            coockedOrders: { ...order, status }, // 기존 order 에 변경된 status 만 바꿔서 payload 로 전달
+            coockedOrders: newOrder, // 기존 order 에 변경된 status 만 바꿔서 payload 로 전달
           });
         }
       }
-
+      await this.pubSub.publish(NEW_ORDER_UPDATE, { orderUpdates: newOrder });
       return {
         ok: true,
       };

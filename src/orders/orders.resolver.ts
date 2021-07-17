@@ -15,6 +15,8 @@ import {
   NEW_COOKED_ORDER,
 } from '../common/common.constants';
 import { PubSub } from 'graphql-subscriptions';
+import { OrderUpdatesInput } from './dtos/order-updates.dto';
+import { NEW_ORDER_UPDATE } from '../common/common.constants';
 
 @Resolver(of => Order)
 export class OrderResolver {
@@ -75,5 +77,11 @@ export class OrderResolver {
   @Role(['Delivery'])
   coockedOrders() {
     return this.pubSub.asyncIterator(NEW_COOKED_ORDER);
+  }
+
+  @Subscription(returns => Order)
+  @Role(['Any'])
+  orderUpdates(@Args('input') orderUpdatesInput: OrderUpdatesInput) {
+    return this.pubSub.asyncIterator(NEW_ORDER_UPDATE);
   }
 }
