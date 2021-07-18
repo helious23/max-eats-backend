@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Payment } from './entities/payment.entity';
-import { Repository } from 'typeorm';
+import { LessThan, Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
 import { Restaurant } from '../restaurants/entities/restaurant.entity';
 import { GetPaymentsOutput } from './dtos/get-payments.dto';
@@ -9,7 +9,7 @@ import {
   CreatePaymentInput,
   CreatePaymentOutput,
 } from './dtos/create-payment.dto';
-import { Cron, Interval, SchedulerRegistry, Timeout } from '@nestjs/schedule';
+import { Cron, Interval } from '@nestjs/schedule';
 
 @Injectable()
 export class PaymentService {
@@ -18,7 +18,6 @@ export class PaymentService {
     private readonly payments: Repository<Payment>,
     @InjectRepository(Restaurant)
     private readonly restaurants: Repository<Restaurant>,
-    private schedulerRegistry: SchedulerRegistry,
   ) {}
 
   async createPayment(
@@ -85,5 +84,18 @@ export class PaymentService {
         error: '구매 내역을 불러오지 못했습니다',
       };
     }
+  }
+
+  @Cron('* * 24 * * *')
+  async checkPromotedRestaurant() {
+    const restaurants = await this.restaurants.find({
+      isPromoted: true,
+      promoteUntil: LessThan(new Date()),
+    });
+    restaurants.forEach(async restaurant => {
+      restaurant.isPromoted = false;
+      restaurant.promoteUntil = null;
+      await this.restaurants.save(restaurant);
+    });
   }
 }

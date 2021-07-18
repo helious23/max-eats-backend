@@ -49,3 +49,5 @@ The backend of Max Eats Clone
 - [x] Add Driver to Order
 
 ## Payment (CRON)
+- [x] Promotion the restaurant by paying
+- [x] Promotion until 7 days by CRON job
