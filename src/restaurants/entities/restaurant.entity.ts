@@ -1,6 +1,6 @@
 // Query typeDef for GraphQL
 import { Field, ObjectType, InputType } from '@nestjs/graphql';
-import { IsString, Length } from 'class-validator';
+import { IsBoolean, IsDate, IsString, Length } from 'class-validator';
 import {
   Column,
   Entity,
@@ -58,4 +58,14 @@ export class Restaurant extends CoreEntity {
   @Field(type => [Dish])
   @OneToMany(type => Dish, dish => dish.restaurant)
   menu: Dish[];
+
+  @Field(type => Boolean)
+  @Column({ default: false }) // 기존 레스토랑이 있으므로 default 를 false 로 설정해야 에러 X
+  @IsBoolean()
+  isPromoted: boolean;
+
+  @Field(type => Date, { nullable: true })
+  @Column({ nullable: true })
+  @IsDate()
+  promoteUntil?: Date;
 }

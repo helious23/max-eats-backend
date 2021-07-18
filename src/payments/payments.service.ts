@@ -39,6 +39,15 @@ export class PaymentService {
           error: '자신이 소유한 식당만 결제할 수 있습니다',
         };
       }
+
+      restaurant.isPromoted = true;
+
+      // 프로모션 기간 설정
+      const date = new Date();
+      date.setDate(date.getDate() + 7);
+      restaurant.promoteUntil = date;
+      this.restaurants.save(restaurant);
+
       await this.payments.save(
         this.payments.create({
           transactionId,
@@ -76,24 +85,5 @@ export class PaymentService {
         error: '구매 내역을 불러오지 못했습니다',
       };
     }
-  }
-
-  @Cron('5 * * * * *', {
-    name: 'myjob',
-  })
-  checkForPayments() {
-    console.log('Chekcing for payments...(cron)');
-    const job = this.schedulerRegistry.getCronJob('myjob');
-    job.stop();
-  }
-
-  @Interval(5000)
-  checkForPaymentsI() {
-    console.log('Chekcing for payments...(interval)');
-  }
-
-  @Timeout(20000)
-  afterStarts() {
-    console.log('Contrats!');
   }
 }

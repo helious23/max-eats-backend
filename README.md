@@ -48,5 +48,4 @@ The backend of Max Eats Clone
 - [x] Pending Pickup Order (Delivery) (Sub: orderUpdate) (Trigger: editOrder(orderUpdate))
 - [x] Add Driver to Order
 
-
 ## Payment (CRON)
