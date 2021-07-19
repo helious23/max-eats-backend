@@ -26,7 +26,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     ConfigModule.forRoot({
       isGlobal: true, // globally env file에 접근 : 필요한 module 의 import 에 ConfigService 로 접근
       envFilePath: process.env.NODE_ENV === 'dev' ? '.env.dev' : '.env.test',
-      ignoreEnvFile: process.env.NODE_ENV === 'prod', // product 시 env 파읾 무시
+      ignoreEnvFile: process.env.NODE_ENV === 'prod', // product 시 env 파일 무시
       validationSchema: Joi.object({
         // env 파일 validation : 내용이 부족하면 app 실행 X
         NODE_ENV: Joi.string().valid('dev', 'prod', 'test').required(),

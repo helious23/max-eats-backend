@@ -1,13 +1,6 @@
-// Query typeDef for GraphQL
 import { Field, ObjectType, InputType } from '@nestjs/graphql';
 import { IsBoolean, IsDate, IsString, Length } from 'class-validator';
-import {
-  Column,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  RelationId,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, RelationId } from 'typeorm';
 import { CoreEntity } from '../../common/entities/core.entity';
 import { Category } from './category.entity';
 import { User } from '../../users/entities/user.entity';
