@@ -2,10 +2,12 @@
 
 The backend of Max Eats Clone
 
-## User Entity
+## Core Entity
 - [X] id
 - [X] createdAt
 - [X] updatedAt
+  
+## User Entity
 - [X] email
 - [X] password
 - [X] role(client|owner|delivery)

@@ -21,12 +21,12 @@ export enum UserRole {
 
 registerEnumType(UserRole, { name: 'UserRole' }); // for graphQL
 
-@InputType('UserInputType', { isAbstract: true })
-@ObjectType()
+@InputType('UserInputType', { isAbstract: true }) // for graphQL
+@ObjectType() // for graphQL
 @Entity()
 export class User extends CoreEntity {
   @Column({ unique: true })
-  @Field(type => String)
+  @Field(type => String) // for graphQL
   @IsEmail()
   email: string;
 
@@ -35,7 +35,7 @@ export class User extends CoreEntity {
   @IsString()
   password: string;
 
-  @Column({ type: 'enum', enum: UserRole }) // for DB (0, 1, 2)
+  @Column({ type: 'enum', enum: UserRole }) // for DB
   @Field(type => UserRole) // for graphQL
   @IsEnum(UserRole)
   role: UserRole;

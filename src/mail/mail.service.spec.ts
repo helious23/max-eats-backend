@@ -2,7 +2,7 @@ import { MailService } from './mail.service';
 import got from 'got';
 import * as FormData from 'form-data';
 import { Test } from '@nestjs/testing';
-import { CONFIG_OPTIONS } from '../jwt/jwt.constants';
+import { CONFIG_OPTIONS } from 'src/common/common.constants';
 
 jest.mock('got');
 jest.mock('form-data');

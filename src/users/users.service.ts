@@ -14,7 +14,6 @@ import { VerifyEmailOutput } from './dtos/verify-email.dto';
 import { UserProfileOutput } from './dtos/user-profile.dto';
 import { MailService } from '../mail/mail.service';
 
-// # 2
 @Injectable()
 export class UserService {
   constructor(
@@ -33,7 +32,7 @@ export class UserService {
     try {
       const exists = await this.users.findOne({ email });
       if (exists) {
-        return { ok: false, error: '사용중인 이메일 입니다.' };
+        return { ok: false, error: '사용중인 이메일 입니다' };
       }
       const user = await this.users.save(
         this.users.create({ email, password, role }),
@@ -50,12 +49,11 @@ export class UserService {
       this.mailService.sendVerificationEmail(user.email, verification.code);
       return { ok: true };
     } catch (e) {
-      return { ok: false, error: '계정을 만들지 못했습니다.' };
+      return { ok: false, error: '계정을 만들지 못했습니다' };
     }
   }
 
   async login({ email, password }: LoginInput): Promise<LoginOutput> {
-    // make a JWT and give it to the user
     try {
       const user = await this.users.findOne(
         { email },
