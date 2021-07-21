@@ -11,10 +11,10 @@ export class MailService {
   ) {}
 
   async sendEmail(
-    subject: string,
-    template: string,
-    to: string,
-    emailVars: EmailVar[],
+    subject: string, // 제목
+    template: string, // mailgun template name
+    to: string, // mail 수신자
+    emailVars: EmailVar[], // mailgun temaplate 의 variable : username, code
   ): Promise<boolean> {
     const form = new FormData();
     form.append('from', `Max from Max Eats <mailgun@${this.options.domain}>`);

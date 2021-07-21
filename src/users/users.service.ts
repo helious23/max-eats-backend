@@ -57,19 +57,19 @@ export class UserService {
     try {
       const user = await this.users.findOne(
         { email },
-        { select: ['id', 'password'] },
+        { select: ['id', 'password'] }, // user.entity 의 password : { select:false } 이므로 구체적으로 명시 필요
       );
       if (!user) {
         return {
           ok: false,
-          error: '사용자를 찾을 수 없습니다.',
+          error: '사용자를 찾을 수 없습니다',
         };
       }
       const passwordCorrect = await user.checkPassword(password);
       if (!passwordCorrect) {
         return {
           ok: false,
-          error: '비밀번호가 틀렸습니다.',
+          error: '비밀번호가 틀렸습니다',
         };
       }
       const token = this.jwtService.sign(user.id);
@@ -80,7 +80,7 @@ export class UserService {
     } catch (error) {
       return {
         ok: false,
-        error: '로그인하지 못했습니다.',
+        error: '로그인하지 못했습니다',
       };
     }
   }
@@ -93,7 +93,7 @@ export class UserService {
         user: user,
       };
     } catch (error) {
-      return { ok: false, error: '사용자를 찾을 수 없습니다.' };
+      return { ok: false, error: '사용자를 찾을 수 없습니다' };
     }
   }
 
@@ -125,7 +125,7 @@ export class UserService {
       await this.users.save(user);
       return { ok: true };
     } catch (error) {
-      return { ok: false, error: '프로필을 업데이트 하지 못했습니다.' };
+      return { ok: false, error: '프로필을 업데이트 하지 못했습니다' };
     }
   }
 
@@ -141,9 +141,9 @@ export class UserService {
         await this.verifications.delete(verification.id);
         return { ok: true };
       }
-      return { ok: false, error: '인증되지 않았습니다.' };
+      return { ok: false, error: '인증되지 않았습니다' };
     } catch (error) {
-      return { ok: false, error: '이메일을 인증하지 못했습니다.' };
+      return { ok: false, error: '이메일을 인증하지 못했습니다' };
     }
   }
 }
