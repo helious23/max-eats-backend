@@ -120,6 +120,12 @@ export class UserService {
         this.mailService.sendVerificationEmail(user.email, verification.code);
       }
       if (password) {
+        if ((user.password = password)) {
+          return {
+            ok: false,
+            error: '동일한 비밀번호로는 변경할 수 없습니다',
+          };
+        }
         user.password = password;
       }
       await this.users.save(user);

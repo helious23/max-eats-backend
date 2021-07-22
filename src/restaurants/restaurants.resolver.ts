@@ -44,12 +44,12 @@ export class ResturantResolver {
 
   @Mutation(retuns => CreateRestaurantOutput)
   @Role(['Owner']) // owner 만 사용 가능
-  async createRestaurant(
-    @AuthUser() authUser: User,
+  createRestaurant(
+    @AuthUser() owner: User,
     @Args('input') createRestaurantInput: CreateRestaurantInput,
   ): Promise<CreateRestaurantOutput> {
-    return await this.restaurantService.createRestaurant(
-      authUser,
+    return this.restaurantService.createRestaurant(
+      owner,
       createRestaurantInput,
     );
   }

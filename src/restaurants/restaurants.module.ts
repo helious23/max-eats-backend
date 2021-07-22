@@ -5,13 +5,15 @@ import {
   ResturantResolver,
 } from './restaurants.resolver';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Restaurant } from './entities/restaurant.entity';
 import { RestaurantService } from './resturants.service';
-import { CategoryRepository } from './repositories/category.respository';
+import { CategoryRepository } from './repositories/category.repository';
 import { Dish } from './entities/dish.entity';
+import { RestaurantRepository } from './repositories/restaurant.repository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Restaurant, CategoryRepository, Dish])], // forFeature : 특정 entity 를 import
+  imports: [
+    TypeOrmModule.forFeature([RestaurantRepository, CategoryRepository, Dish]),
+  ], // forFeature : 특정 entity 를 import
   providers: [
     ResturantResolver,
     RestaurantService,

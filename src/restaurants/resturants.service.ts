@@ -7,7 +7,7 @@ import {
 } from './dtos/create-restaurant.dto';
 import { Restaurant } from './entities/restaurant.entity';
 import { User } from '../users/entities/user.entity';
-import { CategoryRepository } from './repositories/category.respository';
+import { CategoryRepository } from './repositories/category.repository';
 import { Category } from './entities/category.entity';
 import { AllCategoriesOutput } from './dtos/all-categories.dto';
 import { CategoryInput, CategoryOutput } from './dtos/category.dto';
@@ -29,12 +29,12 @@ import {
 } from './dtos/edit-restaurant.dto';
 import { EditDishInput, EditDishOutput } from './dtos/edit-dish.dto';
 import { DeleteDishInput, DeleteDishOutput } from './dtos/delete-dish.dto';
+import { RestaurantRepository } from './repositories/restaurant.repository';
 
 @Injectable() // resolver 에 constructor 로 inject 할 수 있게 함
 export class RestaurantService {
   constructor(
-    @InjectRepository(Restaurant) // Restaurant entity 로 repository 를 만듦
-    private readonly restaurants: Repository<Restaurant>, // restaurants 라는 이름으로 Restaurant entity 를 Repository type 으로 만듦
+    private readonly restaurants: RestaurantRepository,
     @InjectRepository(Dish) private readonly dishes: Repository<Dish>,
     private readonly categories: CategoryRepository, // custom repository
   ) {}
@@ -164,21 +164,15 @@ export class RestaurantService {
           error: '카테고리를 찾을 수 없습니다',
         };
       }
-      const restaurants = await this.restaurants.find({
-        where: {
-          category,
-        },
-        take: 25,
-        skip: (page - 1) * 25,
-        order: {
-          isPromoted: 'DESC', // isPromoted : true 가 위에 나오게 정렬
-        },
-      });
+      const [restaurants, totalResults] =
+        await this.restaurants.findWithPagination(page, 25, category);
       category.restaurants = restaurants;
-      const totalResults = await this.countRestaurant(category);
+
       return {
         ok: true,
         category,
+        restaurants,
+        totalResults,
         totalPages: Math.ceil(totalResults / 25),
       };
     } catch (error) {
@@ -191,13 +185,10 @@ export class RestaurantService {
 
   async allRestaurants({ page }: RestaurantsInput): Promise<RestaurantsOutput> {
     try {
-      const [results, totalResults] = await this.restaurants.findAndCount({
-        take: 25,
-        skip: (page - 1) * 25,
-        order: {
-          isPromoted: 'DESC', // isPromoted : true 가 위에 나오게 정렬
-        },
-      });
+      const [results, totalResults] = await this.restaurants.findWithPagination(
+        page,
+        25,
+      );
       return {
         ok: true,
         results,
