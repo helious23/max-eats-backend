@@ -45,7 +45,7 @@ export class RestaurantService {
   ): Promise<CreateRestaurantOutput> {
     try {
       const newRestaurant = this.restaurants.create(createRestaurantInput);
-      newRestaurant.owner = owner;
+      newRestaurant.owner = owner; // input 에는 owner 정보가 X login한 User 로 부터 받아옴
       const category = await this.categories.getOrCreate(
         createRestaurantInput.categoryName,
       );
