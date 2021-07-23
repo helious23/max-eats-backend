@@ -52,6 +52,7 @@ export class OrderService {
       const orderItems: OrderItem[] = [];
 
       for (const item of items) {
+        // dish 가 없을 경우 ok:false 를 return 하기 위해 for loop 사용(forEach X)
         // 주문의 item for loop
         const dish = await this.dishes.findOne(item.dishId); // order 의 dishId 로 메뉴 검색
         if (!dish) {
@@ -127,7 +128,7 @@ export class OrderService {
 
   async getOrders(
     user: User,
-    { status }: GetOrdersInput,
+    { status, page }: GetOrdersInput,
   ): Promise<GetOrdersOutput> {
     let orders: Order[];
     try {
@@ -137,6 +138,8 @@ export class OrderService {
             customer: user,
             ...(status && { status }), // input 에 status 가 있을 경우 status 가 같은 값만 find
           },
+          take: 25,
+          skip: (page - 1) * 25,
         });
       } else if (user.role === UserRole.Delivery) {
         orders = await this.orders.find({
@@ -144,12 +147,17 @@ export class OrderService {
             driver: user,
             ...(status && { status }), // input 에 status 가 있을 경우 status 가 같은 값만 find
           },
+          take: 25,
+          skip: (page - 1) * 25,
         });
       } else if (user.role === UserRole.Owner) {
         const restaurants = await this.restaurants.find({
           where: {
             owner: user,
           },
+          take: 25,
+          skip: (page - 1) * 25,
+          // select: ['orders'],
           relations: ['orders'],
         });
         orders = restaurants.map(restaurant => restaurant.orders).flat(1);

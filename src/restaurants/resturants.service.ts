@@ -5,7 +5,6 @@ import {
   CreateRestaurantInput,
   CreateRestaurantOutput,
 } from './dtos/create-restaurant.dto';
-import { Restaurant } from './entities/restaurant.entity';
 import { User } from '../users/entities/user.entity';
 import { CategoryRepository } from './repositories/category.repository';
 import { Category } from './entities/category.entity';

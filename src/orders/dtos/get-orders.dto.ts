@@ -1,15 +1,18 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { OrderStatus, Order } from '../entities/order.entity';
-import { CoreOutput } from '../../common/dtos/output.dto';
+import {
+  PaginationInput,
+  PaginationOutput,
+} from '../../common/dtos/pagination.dto';
 
 @InputType()
-export class GetOrdersInput {
+export class GetOrdersInput extends PaginationInput {
   @Field(type => OrderStatus, { nullable: true })
-  status: OrderStatus;
+  status?: OrderStatus;
 }
 
 @ObjectType()
-export class GetOrdersOutput extends CoreOutput {
+export class GetOrdersOutput extends PaginationOutput {
   @Field(type => [Order], { nullable: true })
   orders?: Order[];
 }
