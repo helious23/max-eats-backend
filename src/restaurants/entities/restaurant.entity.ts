@@ -33,6 +33,7 @@ export class Restaurant extends CoreEntity {
     // 어디와 연결되어 있는지 명시, 연결된 entity 의 어느 항목인지 기재
     nullable: true, // category 가 지워져도 restaurant 는 지워지면 안됨
     onDelete: 'SET NULL', // category 가 없는 restaurant 도 있을 수 있음
+    eager: true,
   })
   category: Category;
 

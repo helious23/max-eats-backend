@@ -131,43 +131,52 @@ export class OrderService {
     { status, page }: GetOrdersInput,
   ): Promise<GetOrdersOutput> {
     let orders: Order[];
+    let totalResults: number;
     try {
       if (user.role === UserRole.Client) {
-        orders = await this.orders.find({
+        [orders, totalResults] = await this.orders.findAndCount({
           where: {
             customer: user,
             ...(status && { status }), // input 에 status 가 있을 경우 status 가 같은 값만 find
           },
-          take: 25,
-          skip: (page - 1) * 25,
+          take: 10,
+          skip: (page - 1) * 10,
         });
       } else if (user.role === UserRole.Delivery) {
-        orders = await this.orders.find({
+        [orders, totalResults] = await this.orders.findAndCount({
           where: {
             driver: user,
             ...(status && { status }), // input 에 status 가 있을 경우 status 가 같은 값만 find
           },
-          take: 25,
-          skip: (page - 1) * 25,
+          take: 10,
+          skip: (page - 1) * 10,
         });
       } else if (user.role === UserRole.Owner) {
         const restaurants = await this.restaurants.find({
           where: {
             owner: user,
           },
-          take: 25,
-          skip: (page - 1) * 25,
-          // select: ['orders'],
           relations: ['orders'],
         });
-        orders = restaurants.map(restaurant => restaurant.orders).flat(1);
+
+        orders = restaurants
+          .map(restaurant => restaurant.orders)
+          .flat(1)
+          .slice((page - 1) * 10, page * 10);
+
         if (status) {
           orders = orders.filter(order => order.status === status); // 각각의 order의 status 가 input 의 status 와 같은 경우만 filter
+          totalResults = restaurants
+            .map(restaurant => restaurant.orders)
+            .flat(1)
+            .filter(order => order.status === status).length;
         }
       }
       return {
         ok: true,
         orders,
+        totalResults,
+        totalPages: totalResults ? Math.ceil(totalResults / 10) : null,
       };
     } catch (error) {
       return {

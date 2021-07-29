@@ -96,7 +96,8 @@ export class UserService {
       return { ok: false, error: '사용자를 찾을 수 없습니다' };
     }
   }
-
+  // 실제 서비스 구현시 프로필 수정과 패스워드 변경을 분리하여 관리 하는 것이 더 편할듯
+  // 패스워드 변경 시 기존 패스워드 확인 및 새로운 패스워드 validation 도 구현
   async editProfile(
     userId: number,
     { email, password }: EditProfileInput,
@@ -104,9 +105,24 @@ export class UserService {
     try {
       const user = await this.users.findOne(userId);
       if (email) {
-        // check email 있을 경우 error
         // unit testing 추가
-
+        if (user.email === email) {
+          return {
+            ok: false,
+            error: '동일한 이메일로는 변경할 수 없습니다',
+          };
+        }
+        const existUser = await this.users.findOne({
+          where: {
+            email,
+          },
+        });
+        if (existUser?.email === email) {
+          return {
+            ok: false,
+            error: '사용중인 이메일 입니다',
+          };
+        }
         user.email = email;
         user.verified = false;
 
@@ -120,7 +136,7 @@ export class UserService {
         this.mailService.sendVerificationEmail(user.email, verification.code);
       }
       if (password) {
-        if ((user.password = password)) {
+        if (user.password === password) {
           return {
             ok: false,
             error: '동일한 비밀번호로는 변경할 수 없습니다',
