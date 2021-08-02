@@ -29,6 +29,7 @@ import {
 import { EditDishInput, EditDishOutput } from './dtos/edit-dish.dto';
 import { DeleteDishInput, DeleteDishOutput } from './dtos/delete-dish.dto';
 import { RestaurantRepository } from './repositories/restaurant.repository';
+import { MyRestaurantsOutput } from './dtos/my-restaurants.dto';
 
 @Injectable() // resolver 에 constructor 로 inject 할 수 있게 함
 export class RestaurantService {
@@ -57,6 +58,21 @@ export class RestaurantService {
       return {
         ok: false,
         error: '식당을 등록하지 못했습니다',
+      };
+    }
+  }
+
+  async myRestaurants(owner: User): Promise<MyRestaurantsOutput> {
+    try {
+      const restaurants = await this.restaurants.find({ owner });
+      return {
+        ok: true,
+        restaurants,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: '식당을 찾을 수 없습니다',
       };
     }
   }
@@ -164,7 +180,7 @@ export class RestaurantService {
         };
       }
       const [restaurants, totalResults] =
-        await this.restaurants.findWithPagination(page, 25, category);
+        await this.restaurants.findWithPagination(page, 3, category);
       category.restaurants = restaurants;
 
       return {
@@ -172,7 +188,7 @@ export class RestaurantService {
         category,
         restaurants,
         totalResults,
-        totalPages: Math.ceil(totalResults / 25),
+        totalPages: Math.ceil(totalResults / 3),
       };
     } catch (error) {
       return {
@@ -186,12 +202,12 @@ export class RestaurantService {
     try {
       const [results, totalResults] = await this.restaurants.findWithPagination(
         page,
-        25,
+        3,
       );
       return {
         ok: true,
         results,
-        totalPages: Math.ceil(totalResults / 25),
+        totalPages: Math.ceil(totalResults / 3),
         totalResults,
       };
     } catch (error) {
