@@ -22,8 +22,7 @@ export class UploadsController {
     });
     try {
       const objectName = `${Date.now() + file.originalname}`;
-      await new AWS.S3().config
-        .update({ region: 'ap-northeast-2' })
+      await new AWS.S3()
         // .createBucket({
         //   Bucket: 'maxeats-uploads-max16',
         // })
