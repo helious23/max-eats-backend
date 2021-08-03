@@ -29,7 +29,10 @@ import {
 import { EditDishInput, EditDishOutput } from './dtos/edit-dish.dto';
 import { DeleteDishInput, DeleteDishOutput } from './dtos/delete-dish.dto';
 import { RestaurantRepository } from './repositories/restaurant.repository';
-import { MyRestaurantsOutput } from './dtos/my-restaurants.dto';
+import {
+  MyRestaurantsOutput,
+  MyRestaurantsInput,
+} from './dtos/my-restaurants.dto';
 
 @Injectable() // resolver 에 constructor 로 inject 할 수 있게 함
 export class RestaurantService {
@@ -62,11 +65,21 @@ export class RestaurantService {
     }
   }
 
-  async myRestaurants(owner: User): Promise<MyRestaurantsOutput> {
+  async myRestaurants(
+    owner: User,
+    { page }: MyRestaurantsInput,
+  ): Promise<MyRestaurantsOutput> {
     try {
-      const restaurants = await this.restaurants.find({ owner });
+      const [restaurants, totalResults] = await this.restaurants.findAndCount({
+        where: { owner },
+        take: 9,
+        skip: (page - 1) * 9,
+      });
+
       return {
         ok: true,
+        totalResults,
+        totalPages: Math.ceil(totalResults / 9),
         restaurants,
       };
     } catch (error) {
@@ -180,7 +193,7 @@ export class RestaurantService {
         };
       }
       const [restaurants, totalResults] =
-        await this.restaurants.findWithPagination(page, 3, category);
+        await this.restaurants.findWithPagination(page, 9, category);
       category.restaurants = restaurants;
 
       return {
@@ -188,7 +201,7 @@ export class RestaurantService {
         category,
         restaurants,
         totalResults,
-        totalPages: Math.ceil(totalResults / 3),
+        totalPages: Math.ceil(totalResults / 9),
       };
     } catch (error) {
       return {
@@ -202,12 +215,12 @@ export class RestaurantService {
     try {
       const [results, totalResults] = await this.restaurants.findWithPagination(
         page,
-        3,
+        9,
       );
       return {
         ok: true,
         results,
-        totalPages: Math.ceil(totalResults / 3),
+        totalPages: Math.ceil(totalResults / 9),
         totalResults,
       };
     } catch (error) {

@@ -17,6 +17,7 @@
     "baseUrl": "./",
     "incremental": true,
     "allowJs": true,
+    
   },
   "include": ["src/**/*", "test/**/*"],
   "exclude": ["node_modules"]
