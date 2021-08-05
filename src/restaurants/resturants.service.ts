@@ -30,6 +30,10 @@ import { EditDishInput, EditDishOutput } from './dtos/edit-dish.dto';
 import { DeleteDishInput, DeleteDishOutput } from './dtos/delete-dish.dto';
 import { RestaurantRepository } from './repositories/restaurant.repository';
 import {
+  CheckRestaurantInput,
+  CheckRestaurantOutput,
+} from './dtos/check-restaurant.dto';
+import {
   MyRestaurantsOutput,
   MyRestaurantsInput,
 } from './dtos/my-restaurants.dto';
@@ -46,6 +50,8 @@ export class RestaurantService {
     private readonly categories: CategoryRepository, // custom repository
   ) {}
 
+  // 식당 생성 시 파일 업로드 후에 validation 진행하므로
+  // checkRestaurant 만들어서 button 으로 validation 이 나을듯
   async createRestaurant(
     owner: User,
     createRestaurantInput: CreateRestaurantInput,
@@ -53,6 +59,13 @@ export class RestaurantService {
     try {
       const newRestaurant = this.restaurants.create(createRestaurantInput);
       newRestaurant.owner = owner; // input 에는 owner 정보가 X login한 User 로 부터 받아옴
+
+      const newRestaurantName = createRestaurantInput.name
+        .trim() // 앞 뒤 공백 제거
+        .toLowerCase(); // 소문자로 변환
+      const restaurantSlug = newRestaurantName.replace(/ +/g, '-'); // 중간 스페이스를 - 로 변환
+      newRestaurant.slug = restaurantSlug;
+
       const category = await this.categories.getOrCreate(
         createRestaurantInput.categoryName,
       );
@@ -68,6 +81,28 @@ export class RestaurantService {
         error: '식당을 등록하지 못했습니다',
       };
     }
+  }
+
+  async checkRestaurant({
+    name,
+  }: CheckRestaurantInput): Promise<CheckRestaurantOutput> {
+    const existSlug = name
+      .trim() // 앞 뒤 공백 제거
+      .toLowerCase(); // 소문자로 변환
+    const existRestaurantSlug = existSlug.replace(/ +/g, '-'); // 중간 스페이스를 - 로 변환
+    const exists = await this.restaurants.findOne({
+      slug: existRestaurantSlug,
+    });
+
+    if (exists) {
+      return {
+        ok: false,
+        error: '이미 등록된 식당입니다',
+      };
+    }
+    return {
+      ok: true,
+    };
   }
 
   async myRestaurants(

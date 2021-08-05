@@ -28,6 +28,11 @@ export class Restaurant extends CoreEntity {
   @IsString()
   address: string;
 
+  @Field(type => String)
+  @Column({ nullable: true })
+  @IsString()
+  slug?: string;
+
   @Field(type => Category, { nullable: true })
   @ManyToOne(type => Category, category => category.restaurants, {
     // 어디와 연결되어 있는지 명시, 연결된 entity 의 어느 항목인지 기재

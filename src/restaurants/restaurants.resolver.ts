@@ -45,6 +45,10 @@ import {
   MyRestaurantOutput,
   MyRestaurantInput,
 } from './dtos/my-restaurant.dto';
+import {
+  CheckRestaurantOutput,
+  CheckRestaurantInput,
+} from './dtos/check-restaurant.dto';
 
 @Resolver(of => Restaurant) // decorator 사용으로 graphql schema 작성 할 필요 없음
 export class ResturantResolver {
@@ -60,6 +64,14 @@ export class ResturantResolver {
       owner,
       createRestaurantInput,
     );
+  }
+
+  @Query(returns => CheckRestaurantOutput)
+  @Role(['Owner'])
+  checkRestaurant(
+    @Args('input') checkRestaurantInput: CheckRestaurantInput,
+  ): Promise<CheckRestaurantOutput> {
+    return this.restaurantService.checkRestaurant(checkRestaurantInput);
   }
 
   @Query(returns => MyRestaurantsOutput)
