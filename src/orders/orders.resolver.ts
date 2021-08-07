@@ -18,6 +18,10 @@ import { PubSub } from 'graphql-subscriptions';
 import { OrderUpdatesInput } from './dtos/order-updates.dto';
 import { NEW_ORDER_UPDATE } from '../common/common.constants';
 import { TakeOrderOutput, TakeOrderInput } from './dtos/take-order.dto';
+import {
+  GetOrderAmountOutput,
+  GetOrderAmountInput,
+} from './dtos/get-order-amount.dto';
 
 @Resolver(of => Order)
 export class OrderResolver {
@@ -33,6 +37,14 @@ export class OrderResolver {
     @Args('input') createOrderInput: CreateOrderInput,
   ): Promise<CreateOrderOutput> {
     return this.orderService.createOrder(customer, createOrderInput);
+  }
+
+  @Query(returns => GetOrderAmountOutput)
+  @Role(['Owner'])
+  getOrderAmount(
+    @Args('input') getOrderAmountInput: GetOrderAmountInput,
+  ): Promise<GetOrderAmountOutput> {
+    return this.orderService.getOrderAmount(getOrderAmountInput);
   }
 
   @Query(returns => GetOrdersOutput)

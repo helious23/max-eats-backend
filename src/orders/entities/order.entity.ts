@@ -78,4 +78,7 @@ export class Order extends CoreEntity {
 
   @RelationId((order: Order) => order.driver)
   driverId: number;
+
+  @RelationId((order: Order) => order.restaurant)
+  restaurantId: number;
 }

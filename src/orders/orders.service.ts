@@ -18,6 +18,10 @@ import {
 import { PubSub } from 'graphql-subscriptions';
 import { NEW_ORDER_UPDATE } from '../common/common.constants';
 import { TakeOrderInput, TakeOrderOutput } from './dtos/take-order.dto';
+import {
+  GetOrderAmountInput,
+  GetOrderAmountOutput,
+} from './dtos/get-order-amount.dto';
 
 @Injectable()
 export class OrderService {
@@ -122,6 +126,35 @@ export class OrderService {
       return {
         ok: false,
         error: '주문을 만들지 못했습니다',
+      };
+    }
+  }
+
+  async getOrderAmount({
+    restaurantId,
+    page,
+  }: GetOrderAmountInput): Promise<GetOrderAmountOutput> {
+    try {
+      const [orders, totalResults] = await this.orders.findAndCount({
+        where: {
+          restaurant: restaurantId,
+        },
+        order: {
+          createdAt: 'ASC',
+        },
+        take: 30,
+        skip: (page - 1) * 30,
+      });
+      return {
+        ok: true,
+        totalResults,
+        totalPages: Math.ceil(totalResults / 30),
+        orders,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: '주문 금액을 찾지 못했습니다.',
       };
     }
   }
