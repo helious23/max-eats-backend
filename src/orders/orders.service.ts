@@ -121,8 +121,10 @@ export class OrderService {
       // new_pending_order 이름으로 order 를 pendingOrders subscription 의 payload로 publish
       return {
         ok: true,
+        orderId: order.id,
       };
     } catch (error) {
+      console.log(error);
       return {
         ok: false,
         error: '주문을 만들지 못했습니다',
