@@ -70,7 +70,7 @@ import { UploadsModule } from './uploads/uploads.module';
       ], // going to DB(table)
     }),
     GraphQLModule.forRoot({
-      playground: process.env.NODE_ENV !== 'production', // production 에서는 playground 실행 X
+      // playground: process.env.NODE_ENV !== 'production', // production 에서는 playground 실행 X
       installSubscriptionHandlers: true, // 서버가 웹소켓 기능을 가지게 됨
       autoSchemaFile: true, // schemaFile 메모리에 저장
       context: ({ req, connection }) => {
