@@ -54,7 +54,7 @@ import { UploadsModule } from './uploads/uploads.module';
             database: process.env.DB_NAME,
           }),
 
-      synchronize: process.env.NODE_ENV !== 'production', // auto migration. production 시에는 false
+      synchronize: process.env.NODE_ENV !== 'prod', // auto migration. production 시에는 false
       logging:
         process.env.NODE_ENV !== 'production' &&
         process.env.NODE_ENV !== 'test', // check log. production 시에는 false
@@ -70,6 +70,7 @@ import { UploadsModule } from './uploads/uploads.module';
       ], // going to DB(table)
     }),
     GraphQLModule.forRoot({
+      playground: process.env.NODE_ENV !== 'production', // production 에서는 playground 실행 X
       installSubscriptionHandlers: true, // 서버가 웹소켓 기능을 가지게 됨
       autoSchemaFile: true, // schemaFile 메모리에 저장
       context: ({ req, connection }) => {
