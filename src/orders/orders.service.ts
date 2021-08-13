@@ -324,7 +324,7 @@ export class OrderService {
       if (user.role === UserRole.Owner) {
         if (status === OrderStatus.Cooked) {
           await this.pubSub.publish(NEW_COOKED_ORDER, {
-            coockedOrders: newOrder, // 기존 order 에 변경된 status 만 바꿔서 payload 로 전달
+            cookedOrders: newOrder, // 기존 order 에 변경된 status 만 바꿔서 payload 로 전달
           });
         }
       }
