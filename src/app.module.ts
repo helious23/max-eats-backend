@@ -31,7 +31,7 @@ import { UploadsModule } from './uploads/uploads.module';
       validationSchema: Joi.object({
         // env 파일 validation : 내용이 부족하면 app 실행 X
         NODE_ENV: Joi.string().valid('dev', 'prod', 'test').required(),
-        DB_HOST: Joi.string(),
+        DB_HOST: Joi.string(), // prod 일 때 url 사용하므로 required 삭제
         DB_PORT: Joi.string(),
         DB_USERNAME: Joi.string(),
         DB_PASSWORD: Joi.string(),
@@ -45,7 +45,7 @@ import { UploadsModule } from './uploads/uploads.module';
     TypeOrmModule.forRoot({
       type: 'postgres',
       ...(process.env.DATABASE_URL
-        ? { url: process.env.DATABASE_URL }
+        ? { url: process.env.DATABASE_URL } // url 에 정보가 계속 바뀜
         : {
             host: process.env.DB_HOST,
             port: +process.env.DB_PORT,
