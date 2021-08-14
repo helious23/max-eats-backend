@@ -68,6 +68,7 @@ export class RestaurantService {
 
       const category = await this.categories.getOrCreate(
         createRestaurantInput.categoryName,
+        createRestaurantInput.categoryImg,
       );
       newRestaurant.category = category;
       await this.restaurants.save(newRestaurant);
@@ -175,6 +176,7 @@ export class RestaurantService {
       if (editRestaurantInput.categoryName) {
         category = await this.categories.getOrCreate(
           editRestaurantInput.categoryName,
+          editRestaurantInput.categoryImg,
         );
       }
       await this.restaurants.save([
